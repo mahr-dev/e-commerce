@@ -4,11 +4,9 @@ eCommerce API — FastAPI Application Entry Point
 Run with:
     uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
-Swagger UI:  http://localhost:8000/docs
-ReDoc:       http://localhost:8000/redoc
-
-CORS: el middleware va antes de los routers. No uses builds/routes legacy
-con @vercel/python en vercel.json: rompe el runtime ASGI en Vercel.
+CORS: middleware propio que fuerza cabeceras en la respuesta final (en Vercel a veces
+CORSMiddleware no deja Access-Control-Allow-Origin en el 200). No uses builds/routes
+legacy con @vercel/python en vercel.json.
 """
 import os
 import re
@@ -16,12 +14,14 @@ import re
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request as StarletteRequest
+from starlette.responses import Response
 
 from routers import auth, products, cart, checkout, orders, payment, account
 
 # ---------------------------------------------------------------------------
-# Orígenes permitidos (allow_credentials=True → no se puede usar "*")
+# Orígenes permitidos (allow_credentials=True → origen reflejado, no "*")
 # ---------------------------------------------------------------------------
 
 ALLOW_ORIGINS = [
@@ -46,8 +46,56 @@ for _part in os.environ.get("CORS_EXTRA_ORIGINS", "").split(","):
     if _o and _o not in ALLOW_ORIGINS:
         ALLOW_ORIGINS.append(_o)
 
-# Previews u otros front en *.vercel.app
 _VERCEL_APP_ORIGIN = re.compile(r"^https://[\w-]+\.vercel\.app$")
+
+_CORS_METHODS = "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD"
+
+
+def _resolve_allowed_origin(request: StarletteRequest) -> str | None:
+    raw = request.headers.get("origin")
+    if not raw:
+        return None
+    origin = raw.strip()
+    if origin in ALLOW_ORIGINS or _VERCEL_APP_ORIGIN.match(origin):
+        return origin
+    return None
+
+
+class StrictCorsMiddleware(BaseHTTPMiddleware):
+    """Preflight OPTIONS + cabeceras CORS en todas las respuestas permitidas."""
+
+    async def dispatch(self, request: StarletteRequest, call_next):
+        origin = _resolve_allowed_origin(request)
+
+        if request.method == "OPTIONS":
+            if origin is None:
+                return await call_next(request)
+            req_headers = request.headers.get("access-control-request-headers")
+            allow_headers = req_headers or "authorization, content-type, accept, origin, x-requested-with"
+            return Response(
+                status_code=204,
+                headers={
+                    "access-control-allow-origin": origin,
+                    "access-control-allow-credentials": "true",
+                    "access-control-allow-methods": _CORS_METHODS,
+                    "access-control-allow-headers": allow_headers,
+                    "access-control-max-age": "86400",
+                    "vary": "Origin",
+                },
+            )
+
+        response = await call_next(request)
+        if origin is not None:
+            response.headers["access-control-allow-origin"] = origin
+            response.headers["access-control-allow-credentials"] = "true"
+            response.headers["access-control-allow-methods"] = _CORS_METHODS
+            existing = response.headers.get("vary", "")
+            parts = [p.strip() for p in existing.split(",") if p.strip()] if existing else []
+            if not any(p.lower() == "origin" for p in parts):
+                parts.append("Origin")
+            response.headers["vary"] = ", ".join(parts)
+        return response
+
 
 # ---------------------------------------------------------------------------
 # Application factory
@@ -64,33 +112,23 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS primero (antes de rutas y del resto de middlewares que añadas)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ALLOW_ORIGINS,
-    allow_origin_regex=r"https://[\w-]+\.vercel\.app",
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
-    allow_headers=["*"],
-)
+app.add_middleware(StrictCorsMiddleware)
 
 
 def _cors_headers_for_request(request: Request) -> dict[str, str]:
-    """Con credentials, Allow-Origin debe ser el Origin concreto del request."""
-    origin = request.headers.get("origin")
-    if not origin:
+    o = _resolve_allowed_origin(request)
+    if not o:
         return {}
-    if origin in ALLOW_ORIGINS or _VERCEL_APP_ORIGIN.match(origin):
-        return {
-            "access-control-allow-origin": origin,
-            "access-control-allow-credentials": "true",
-        }
-    return {}
+    return {
+        "access-control-allow-origin": o,
+        "access-control-allow-credentials": "true",
+        "access-control-allow-methods": _CORS_METHODS,
+        "vary": "Origin",
+    }
 
 
 @app.exception_handler(HTTPException)
 async def http_exception_with_cors(request: Request, exc: HTTPException) -> JSONResponse:
-    """401/403 con las mismas reglas CORS (evita que el navegador solo muestre error de CORS)."""
     hdrs: dict[str, str] = {}
     if exc.headers:
         hdrs = {k: v for k, v in exc.headers.items()}
@@ -102,7 +140,7 @@ async def http_exception_with_cors(request: Request, exc: HTTPException) -> JSON
     )
 
 # ---------------------------------------------------------------------------
-# Routers (catálogo /products es público: sin Depends de auth en routers/products)
+# Routers
 # ---------------------------------------------------------------------------
 
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
@@ -112,10 +150,6 @@ app.include_router(checkout.router, prefix="/checkout", tags=["Checkout"])
 app.include_router(orders.router, prefix="/orders", tags=["Orders"])
 app.include_router(payment.router, prefix="/payment", tags=["Payment"])
 app.include_router(account.router, prefix="/account", tags=["Account"])
-
-# ---------------------------------------------------------------------------
-# Health check
-# ---------------------------------------------------------------------------
 
 
 @app.get("/health", tags=["Health"])
