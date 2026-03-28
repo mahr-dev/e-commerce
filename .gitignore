@@ -92,7 +92,8 @@ build/
 /public/*
 !/public/.gitkeep
 
-# Front “standalone” (segunda app Vercel): generado en build desde API_PUBLIC_URL
+# Front Vercel: generado en build (inject-api-url.cjs)
+service/frontend/src/environments/environment.vercel.generated.ts
 service/frontend/src/environments/environment.standalone.generated.ts
 .next/
 .nuxt/
