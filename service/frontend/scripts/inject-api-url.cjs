@@ -1,6 +1,6 @@
 /**
- * - API_PUBLIC_URL definida → apiUrl = URL directa del backend (cross-origin + CORS en API).
- * - Sin API_PUBLIC_URL → apiUrl = '/api' (proxy en vercel.json, sin CORS en navegador).
+ * Build Vercel: siempre apiUrl = '/api' (mismo origen; proxy en vercel.json → backend).
+ * API_PUBLIC_URL en el dashboard se ignora a propósito para no exponer llamadas directas al API.
  */
 const fs = require("fs");
 const path = require("path");
@@ -8,16 +8,13 @@ const path = require("path");
 const envDir = path.join(__dirname, "..", "src", "environments");
 const out = path.join(envDir, "environment.vercel.generated.ts");
 
-const raw = (process.env.API_PUBLIC_URL || "").trim().replace(/\/$/, "");
+if ((process.env.API_PUBLIC_URL || "").trim()) {
+  console.warn(
+    "API_PUBLIC_URL está definida pero se ignora: el front usa solo /api (proxy). Elimínala en Vercel para evitar confusiones."
+  );
+}
 
-const body = raw
-  ? `/* Generado: API_PUBLIC_URL (llamada directa al backend) */
-export const environment = {
-  production: true,
-  apiUrl: ${JSON.stringify(raw)},
-};
-`
-  : `/* Generado: proxy /api → backend (vercel.json rewrites) */
+const body = `/* Generado por inject-api-url.cjs: proxy /api (ver service/frontend/vercel.json) */
 export const environment = {
   production: true,
   apiUrl: '/api',
@@ -25,4 +22,4 @@ export const environment = {
 `;
 
 fs.writeFileSync(out, body, "utf8");
-console.log(raw ? `API_PUBLIC_URL -> ${raw}` : "apiUrl -> /api (proxy)");
+console.log("apiUrl -> /api (proxy Vercel)");
