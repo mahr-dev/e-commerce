@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  /** Mismo origen: FastAPI montada en /api (Vercel u otro reverse proxy). */
-  apiUrl: '/api',
+  apiUrl: 'http://localhost:8000', // Update to your production API URL
 };
