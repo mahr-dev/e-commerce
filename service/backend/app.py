@@ -1,10 +1,9 @@
 """
-Entrada FastAPI para un proyecto Vercel dedicado solo al API.
+Entrada Vercel (Root Directory = service/backend).
 
-Expone `api_app` (rutas en la raíz: /products, /auth, …), sin prefijo /api
-ni estáticos del Angular.
-
-Uvicorn local: uvicorn app:app --reload --port 8000
-(o: uvicorn main:api_app --reload --port 8000)
+Solo Python: no uses npm en installCommand de este proyecto.
 """
-from main import api_app as app  # noqa: E402
+try:
+    from main import api_app as app  # noqa: F401
+except ImportError:
+    from main import app  # noqa: F401
