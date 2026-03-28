@@ -91,6 +91,9 @@ build/
 # Angular copiado a la raíz para Vercel (se genera en el build)
 /public/*
 !/public/.gitkeep
+
+# Front “standalone” (segunda app Vercel): generado en build desde API_PUBLIC_URL
+service/frontend/src/environments/environment.standalone.generated.ts
 .next/
 .nuxt/
 out/
