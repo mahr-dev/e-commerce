@@ -1,4 +1,8 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://e-commerce-9dql3r3pa-miguel-hernandezs-projects-b6076a4e.vercel.app', // Update to your production API URL
+  /**
+   * Mismo origen en Vercel: /api → rewrite al backend (ver service/frontend/vercel.json).
+   * Si defines API_PUBLIC_URL en el build, inject-api-url.cjs usa URL directa (requiere CORS en API).
+   */
+  apiUrl: '/api',
 };
