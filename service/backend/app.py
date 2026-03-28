@@ -1,9 +1,9 @@
 """
-Entrada Vercel (Root Directory = service/backend).
+Entrada que usa Vercel para FastAPI (expone la variable `app`).
 
-Solo Python: no uses npm en installCommand de este proyecto.
+Root Directory del proyecto en Vercel: service/backend
+
+No uses outputDirectory: "public" en vercel.json para este API: convierte el
+deploy en solo estático y la función Python no se publica.
 """
-try:
-    from main import api_app as app  # noqa: F401
-except ImportError:
-    from main import app  # noqa: F401
+from main import app  # noqa: F401

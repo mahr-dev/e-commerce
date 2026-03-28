@@ -7,6 +7,8 @@ Run with:
 Swagger UI:  http://localhost:8000/docs
 ReDoc:       http://localhost:8000/redoc
 """
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -38,6 +40,15 @@ ALLOWED_ORIGINS = [
     "http://localhost",        # Nginx en Docker (puerto 80 implícito)
     "http://frontend",         # Docker service name
 ]
+
+_vercel = os.environ.get("VERCEL_URL")
+if _vercel:
+    ALLOWED_ORIGINS.append(f"https://{_vercel}")
+
+for _origin in os.environ.get("CORS_EXTRA_ORIGINS", "").split(","):
+    _o = _origin.strip()
+    if _o:
+        ALLOWED_ORIGINS.append(_o)
 
 app.add_middleware(
     CORSMiddleware,
