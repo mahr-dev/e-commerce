@@ -1,7 +1,0 @@
-{
-  "name": "e-commerce",
-  "private": true,
-  "scripts": {
-    "vercel-build": "npm --prefix service/frontend install --no-audit --no-fund && npm --prefix service/frontend run build && node scripts/sync-public.cjs"
-  }
-}

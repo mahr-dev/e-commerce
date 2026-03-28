@@ -1,7 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "installCommand": "npm install --no-audit --no-fund",
-  "buildCommand": "node scripts/write-standalone-env.cjs && npx ng build --configuration vercel-standalone",
-  "outputDirectory": "dist/ecommerce-frontend/browser"
-}

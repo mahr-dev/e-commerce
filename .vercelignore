@@ -1,5 +1,0 @@
-service/backend/venv
-**/__pycache__
-**/*.pyc
-.angular
-service/frontend/node_modules
