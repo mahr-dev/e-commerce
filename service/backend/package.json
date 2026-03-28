@@ -1,0 +1,8 @@
+{
+  "name": "ecommerce-api",
+  "private": true,
+  "description": "Solo para Vercel: el panel suele ejecutar npm run vercel-build; aquí no hay front que compilar.",
+  "scripts": {
+    "vercel-build": "node -e \"process.exit(0)\""
+  }
+}
