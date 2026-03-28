@@ -1,0 +1,94 @@
+@if (loading()) {
+  <div class="loading-inline">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else {
+  <div class="pay-stack">
+    <h2 class="section-heading">Métodos de pago</h2>
+    <p class="section-hint">
+      Solo se guardan marca y últimos 4 dígitos (simulación). No introduzcas el número completo de tarjeta real.
+    </p>
+
+    @for (pm of methods(); track pm.id) {
+      <mat-card class="pm-card">
+        <mat-card-content>
+          <div class="pm-row">
+            <div>
+              <span class="pm-brand">{{ pm.brand }}</span>
+              @if (pm.is_default) {
+                <span class="pm-default">Predeterminada</span>
+              }
+              <p class="pm-pan">•••• {{ pm.last4 }}</p>
+              <p class="pm-exp">Vence {{ pm.expiry }}</p>
+              @if (pm.label) {
+                <p class="pm-label">{{ pm.label }}</p>
+              }
+            </div>
+            <div class="pm-actions">
+              @if (!pm.is_default) {
+                <button
+                  mat-stroked-button
+                  type="button"
+                  (click)="setDefault(pm)"
+                >
+                  <mat-icon>star_outline</mat-icon>
+                  Predeterminar
+                </button>
+              }
+              <button mat-icon-button color="warn" (click)="remove(pm)" aria-label="Eliminar">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (methods().length === 0) {
+      <p class="empty-hint">No hay métodos guardados.</p>
+    }
+
+    <mat-divider class="sep"></mat-divider>
+
+    <h3 class="form-heading">Añadir referencia de tarjeta (prueba)</h3>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Marca</mat-label>
+          <mat-select formControlName="brand">
+            @for (b of brands; track b) {
+              <mat-option [value]="b">{{ b }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Últimos 4 dígitos</mat-label>
+          <input matInput formControlName="last4" maxlength="4" inputmode="numeric" />
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Caducidad (MM/AA)</mat-label>
+        <input
+          matInput
+          formControlName="expiry"
+          maxlength="5"
+          placeholder="12/28"
+          (input)="formatExpiry($event)"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Etiqueta (opcional)</mat-label>
+        <input matInput formControlName="label" placeholder="Mi tarjeta principal" />
+      </mat-form-field>
+      <mat-checkbox formControlName="is_default" class="chk">
+        Usar como método predeterminado
+      </mat-checkbox>
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || saving()">
+        @if (saving()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        }
+        Guardar método
+      </button>
+    </form>
+  </div>
+}

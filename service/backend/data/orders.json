@@ -1,0 +1,163 @@
+[
+  {
+    "id": "d185eb08-69f7-4bbd-b2f2-004bf13f1f7b",
+    "user_id": "user-002",
+    "items": [
+      {
+        "product_id": "prod-001",
+        "name": "Laptop Pro 15",
+        "price": 1299.99,
+        "quantity": 1,
+        "image": "https://picsum.photos/seed/laptop/400/300"
+      }
+    ],
+    "total": 1299.99,
+    "status": "paid",
+    "payment_id": "txn_8eb8bdf2ae4d4806",
+    "created_at": "2026-03-27T21:20:17.630102+00:00"
+  },
+  {
+    "id": "d75080a9-6afe-4fc7-a87c-cdba22683935",
+    "user_id": "user-002",
+    "items": [
+      {
+        "product_id": "prod-003",
+        "name": "Auriculares Noise Cancelling Pro",
+        "price": 249.99,
+        "quantity": 1,
+        "image": "https://picsum.photos/seed/headphones/400/300"
+      }
+    ],
+    "total": 249.99,
+    "status": "shipped",
+    "payment_id": "txn_690f2c2611264daf",
+    "created_at": "2026-03-27T22:09:09.731930+00:00",
+    "shipping_address": {
+      "full_name": "Miguel Angel Hernandez Rodriguez",
+      "line1": "9 y 10 Juan José de la Garza No. 208, Colonia Guadalupe Mainero",
+      "line2": "Casa blanca de 2 pisos con portón de cochera gris",
+      "city": "Ciudad Victoria, Tamaulipas, Mexico",
+      "state": "Tamaulipas",
+      "postal_code": "87100",
+      "country": "ES",
+      "phone": "8342154699",
+      "latitude": null,
+      "longitude": null
+    },
+    "tracking_number": "TRK-B594B9AE338E",
+    "carrier": "ShopNow Express",
+    "tracking_events": [
+      {
+        "at": "2026-03-27T22:09:09.750297+00:00",
+        "description": "Pago confirmado — preparando envío",
+        "location": "Almacén central"
+      },
+      {
+        "at": "2026-03-28T00:09:09.750297+00:00",
+        "description": "Paquete recogido por transportista",
+        "location": null
+      },
+      {
+        "at": "2026-03-28T22:09:09.750297+00:00",
+        "description": "En tránsito hacia tu dirección",
+        "location": "Red nacional"
+      }
+    ]
+  },
+  {
+    "id": "648822fe-9b14-4c57-a793-a42268bef574",
+    "user_id": "670f9c6d-be03-4a17-9cd3-d1d4f9f8d3ee",
+    "items": [
+      {
+        "product_id": "prod-003",
+        "name": "Auriculares Noise Cancelling Pro",
+        "price": 249.99,
+        "quantity": 1,
+        "image": "https://picsum.photos/seed/headphones/400/300"
+      }
+    ],
+    "total": 249.99,
+    "status": "shipped",
+    "payment_id": "txn_c6f1052ba61f4399",
+    "created_at": "2026-03-27T22:26:12.831753+00:00",
+    "shipping_address": {
+      "full_name": "Barcelona 376",
+      "line1": "Fraccionamiento Gran Via",
+      "line2": null,
+      "city": "Ciudad Victoria",
+      "state": "Tamulipas",
+      "postal_code": "87100",
+      "country": "MX",
+      "phone": "8342154699",
+      "latitude": null,
+      "longitude": null
+    },
+    "tracking_number": "TRK-6B5360847847",
+    "carrier": "ShopNow Express",
+    "tracking_events": [
+      {
+        "at": "2026-03-27T22:26:12.848931+00:00",
+        "description": "Pago confirmado — preparando envío",
+        "location": "Almacén central"
+      },
+      {
+        "at": "2026-03-28T00:26:12.848931+00:00",
+        "description": "Paquete recogido por transportista",
+        "location": null
+      },
+      {
+        "at": "2026-03-28T22:26:12.848931+00:00",
+        "description": "En tránsito hacia tu dirección",
+        "location": "Red nacional"
+      }
+    ]
+  },
+  {
+    "id": "3e106a56-0053-4d19-a463-3ce600bcc497",
+    "user_id": "670f9c6d-be03-4a17-9cd3-d1d4f9f8d3ee",
+    "items": [
+      {
+        "product_id": "prod-009",
+        "name": "Mouse Ergonómico Pro",
+        "price": 89.99,
+        "quantity": 1,
+        "image": "https://picsum.photos/seed/mouse/400/300"
+      }
+    ],
+    "total": 89.99,
+    "status": "shipped",
+    "payment_id": "txn_06cd4416c1c64816",
+    "created_at": "2026-03-27T22:36:19.776226+00:00",
+    "shipping_address": {
+      "full_name": "Barcelona 376",
+      "line1": "Fraccionamiento Gran Via",
+      "line2": null,
+      "city": "Ciudad Victoria",
+      "state": "Tamulipas",
+      "postal_code": "87100",
+      "country": "MX",
+      "phone": "8342154699",
+      "latitude": null,
+      "longitude": null
+    },
+    "tracking_number": "TRK-C89F1230450C",
+    "carrier": "ShopNow Express",
+    "tracking_events": [
+      {
+        "at": "2026-03-27T22:36:19.796952+00:00",
+        "description": "Pago confirmado — preparando envío",
+        "location": "Almacén central"
+      },
+      {
+        "at": "2026-03-28T00:36:19.796952+00:00",
+        "description": "Paquete recogido por transportista",
+        "location": null
+      },
+      {
+        "at": "2026-03-28T22:36:19.796952+00:00",
+        "description": "En tránsito hacia tu dirección",
+        "location": "Red nacional"
+      }
+    ]
+  }
+]

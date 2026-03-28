@@ -1,0 +1,69 @@
+<div class="auth-page flex-center">
+  <div class="form-container">
+    <div class="text-center">
+      <div class="auth-icon-wrap">
+        <mat-icon class="auth-icon">lock</mat-icon>
+      </div>
+      <h1 class="form-title">Iniciar sesión</h1>
+      <p class="form-subtitle">Accede a tu cuenta de ShopNow</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Correo electrónico</mat-label>
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          placeholder="ejemplo@correo.com"
+          autocomplete="email"
+        />
+        <mat-icon matPrefix>email</mat-icon>
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          <mat-error>{{ emailError }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          [type]="hidePassword() ? 'password' : 'text'"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="hidePassword.set(!hidePassword())"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          <mat-error>{{ passwordError }}</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Hint: test credentials -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="submit-btn"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          Iniciar sesión
+        }
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿No tienes cuenta? <a routerLink="/auth/register">Regístrate aquí</a></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,110 @@
+<!-- ============================================================
+     App Shell — Navigation Toolbar + Router Outlet
+     ============================================================ -->
+
+<mat-toolbar color="primary" class="app-toolbar">
+  <div class="toolbar-inner container">
+    <!-- Brand -->
+    <a routerLink="/" class="brand">
+      <span class="brand-icon-wrap" aria-hidden="true">
+        <mat-icon>store</mat-icon>
+      </span>
+      <span class="brand-name">ShopNow</span>
+    </a>
+
+    <span class="spacer"></span>
+
+    <!-- Navigation links -->
+    <nav class="nav-links">
+      <a
+        mat-button
+        routerLink="/"
+        routerLinkActive="nav-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <mat-icon>home</mat-icon>
+        Inicio
+      </a>
+      <a mat-button routerLink="/products" routerLinkActive="nav-active">
+        <mat-icon>grid_view</mat-icon>
+        Productos
+      </a>
+
+      @if (isAuthenticated()) {
+        <a
+          mat-button
+          routerLink="/cuenta"
+          routerLinkActive="nav-active"
+          [routerLinkActiveOptions]="{ exact: false }"
+        >
+          <mat-icon>manage_accounts</mat-icon>
+          Mi cuenta
+        </a>
+        <a mat-button routerLink="/orders" routerLinkActive="nav-active">
+          <mat-icon>receipt_long</mat-icon>
+          Pedidos
+        </a>
+      }
+    </nav>
+
+    <!-- Dark mode toggle -->
+    <button
+      mat-icon-button
+      (click)="themeService.toggle()"
+      [attr.aria-label]="isDark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+      class="theme-toggle"
+    >
+      <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+
+    <!-- Cart button -->
+    @if (isAuthenticated()) {
+      <a
+        mat-icon-button
+        routerLink="/cart"
+        [matBadge]="cartItemCount() > 0 ? cartItemCount() : null"
+        matBadgeColor="accent"
+        aria-label="Carrito de compras"
+      >
+        <mat-icon>shopping_cart</mat-icon>
+      </a>
+    }
+
+    <!-- Auth actions -->
+    @if (isAuthenticated()) {
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="Menú de usuario">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+
+      <mat-menu #userMenu="matMenu">
+        <div class="user-menu-header">
+          <p class="user-name">{{ currentUser()?.name }}</p>
+          <p class="user-email">{{ currentUser()?.email }}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <a mat-menu-item routerLink="/cuenta/informacion">
+          <mat-icon>manage_accounts</mat-icon>
+          Mi cuenta
+        </a>
+        <a mat-menu-item routerLink="/cuenta/pedidos">
+          <mat-icon>receipt_long</mat-icon>
+          Mis pedidos
+        </a>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          Cerrar sesión
+        </button>
+      </mat-menu>
+    } @else {
+      <a mat-button routerLink="/auth/login">Iniciar sesión</a>
+      <a mat-raised-button color="accent" routerLink="/auth/register">
+        Registrarse
+      </a>
+    }
+  </div>
+</mat-toolbar>
+
+<!-- Page content -->
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

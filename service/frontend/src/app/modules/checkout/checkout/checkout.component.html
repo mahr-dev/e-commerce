@@ -1,0 +1,460 @@
+<div class="page-content">
+  @if (checkoutResult()) {
+    <div class="result-container">
+      @if (checkoutResult()!.payment.success) {
+        <mat-card class="result-card success">
+          <div class="result-icon-wrap">
+            <mat-icon class="result-icon">check_circle</mat-icon>
+          </div>
+          <h2>¡Pago exitoso!</h2>
+          <p>Tu pedido ha sido procesado correctamente.</p>
+
+          <div class="result-details">
+            <div class="detail-row">
+              <span>N° de orden:</span>
+              <strong>{{ checkoutResult()!.order.id | slice:0:8 }}...</strong>
+            </div>
+            <div class="detail-row">
+              <span>Total pagado:</span>
+              <strong>${{ checkoutResult()!.order.total | number:'1.2-2' }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Transacción:</span>
+              <strong>{{ checkoutResult()!.payment.transaction_id }}</strong>
+            </div>
+            @if (checkoutResult()!.order.tracking_number) {
+              <div class="detail-row">
+                <span>Seguimiento:</span>
+                <strong>{{ checkoutResult()!.order.tracking_number }}</strong>
+              </div>
+            }
+            <div class="detail-row">
+              <span>Estado:</span>
+              <span class="badge badge-paid">Pagado</span>
+            </div>
+          </div>
+
+          <p class="result-message">{{ checkoutResult()!.payment.message }}</p>
+
+          <div class="result-actions">
+            <a mat-raised-button color="primary" routerLink="/orders">
+              <mat-icon>receipt_long</mat-icon>
+              Ver mis pedidos
+            </a>
+            <a mat-stroked-button routerLink="/products">
+              <mat-icon>grid_view</mat-icon>
+              Seguir comprando
+            </a>
+          </div>
+        </mat-card>
+      } @else {
+        <mat-card
+          class="result-card"
+          [class.failure]="checkoutResult()!.payment.status === 'failure'"
+          [class.pending]="checkoutResult()!.payment.status === 'pending'"
+        >
+          <div class="result-icon-wrap">
+            <mat-icon class="result-icon">
+              {{ checkoutResult()!.payment.status === 'pending' ? 'schedule' : 'cancel' }}
+            </mat-icon>
+          </div>
+          <h2>
+            {{ checkoutResult()!.payment.status === 'pending' ? 'Pago en proceso' : 'Pago fallido' }}
+          </h2>
+          <p class="result-message">{{ checkoutResult()!.payment.message }}</p>
+
+          <div class="result-actions">
+            <button mat-raised-button color="primary" (click)="checkoutResult.set(null)">
+              <mat-icon>refresh</mat-icon>
+              Intentar de nuevo
+            </button>
+            <a mat-button routerLink="/cart">
+              <mat-icon>shopping_cart</mat-icon>
+              Volver al carrito
+            </a>
+          </div>
+        </mat-card>
+      }
+    </div>
+  }
+
+  @if (!checkoutResult()) {
+    <div class="page-header checkout-page-header">
+      <h1>Checkout</h1>
+      <p class="subtitle">Revisa envío, pago y el resumen de tu pedido</p>
+    </div>
+    <div class="checkout-layout">
+      <div class="main-column">
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>local_shipping</mat-icon>
+              Dirección de envío
+            </mat-card-title>
+            <mat-card-subtitle
+              >Elige una dirección guardada o introduce una nueva.</mat-card-subtitle
+            >
+          </mat-card-header>
+          <mat-card-content>
+            @if (profile()?.addresses?.length) {
+              <mat-radio-group
+                class="source-radios"
+                [value]="addressSource()"
+                (change)="setAddressSource($any($event).value)"
+              >
+                <mat-radio-button value="saved">Mis direcciones guardadas</mat-radio-button>
+                <mat-radio-button value="new">Nueva dirección</mat-radio-button>
+              </mat-radio-group>
+
+              @if (addressSource() === 'saved') {
+                <mat-form-field appearance="outline" class="full pick-field">
+                  <mat-label>Dirección</mat-label>
+                  <mat-select
+                    [value]="selectedAddressId()"
+                    (selectionChange)="selectedAddressId.set($event.value)"
+                  >
+                    @for (a of profile()!.addresses; track a.id) {
+                      <mat-option [value]="a.id">
+                        {{ a.label }} — {{ a.line1 }}, {{ a.city }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              }
+            } @else {
+              <p class="inline-hint">
+                Puedes guardar direcciones en
+                <a routerLink="/cuenta/direcciones">Mi cuenta → Direcciones</a>.
+              </p>
+            }
+
+            @if (addressSource() === 'new' || !profile()?.addresses?.length) {
+            <div class="address-form" [formGroup]="addressForm">
+              <mat-form-field appearance="outline">
+                <mat-label>Nombre completo</mat-label>
+                <input matInput formControlName="full_name" autocomplete="name" />
+                @if (addressForm.get('full_name')?.invalid && addressForm.get('full_name')?.touched) {
+                  <mat-error>Requerido</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Dirección línea 1</mat-label>
+                <input matInput formControlName="line1" autocomplete="street-address" />
+                @if (addressForm.get('line1')?.invalid && addressForm.get('line1')?.touched) {
+                  <mat-error>Mínimo 3 caracteres</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Dirección línea 2 (opcional)</mat-label>
+                <input matInput formControlName="line2" />
+              </mat-form-field>
+
+              <div class="card-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Ciudad</mat-label>
+                  <input matInput formControlName="city" />
+                  @if (addressForm.get('city')?.invalid && addressForm.get('city')?.touched) {
+                    <mat-error>Requerido</mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Provincia / Estado</mat-label>
+                  <input matInput formControlName="state" />
+                  @if (addressForm.get('state')?.invalid && addressForm.get('state')?.touched) {
+                    <mat-error>Requerido</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="card-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Código postal</mat-label>
+                  <input matInput formControlName="postal_code" />
+                  @if (addressForm.get('postal_code')?.invalid && addressForm.get('postal_code')?.touched) {
+                    <mat-error>Requerido</mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>País</mat-label>
+                  <mat-select formControlName="country">
+                    <mat-option value="ES">España</mat-option>
+                    <mat-option value="MX">México</mat-option>
+                    <mat-option value="AR">Argentina</mat-option>
+                    <mat-option value="CO">Colombia</mat-option>
+                    <mat-option value="US">Estados Unidos</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Teléfono (opcional)</mat-label>
+                <input matInput formControlName="phone" type="tel" />
+              </mat-form-field>
+
+              <div class="card-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Latitud (opcional)</mat-label>
+                  <input matInput formControlName="latitude" placeholder="p. ej. 40.4168" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Longitud (opcional)</mat-label>
+                  <input matInput formControlName="longitude" placeholder="p. ej. -3.7038" />
+                </mat-form-field>
+              </div>
+
+              <button mat-stroked-button type="button" (click)="openMapsPreview()">
+                <mat-icon>map</mat-icon>
+                Ver dirección en mapa (Google Maps)
+              </button>
+            </div>
+            }
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="section-card payment-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>credit_card</mat-icon>
+              Pago
+            </mat-card-title>
+            <mat-card-subtitle>
+              @if (stripeEnabled()) {
+                Elige simulación local o Stripe (test)
+              } @else {
+                Simulación segura — no se procesa dinero real
+              }
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          @if (stripeEnabled()) {
+            <div class="mode-toggle">
+              <mat-button-toggle-group
+                [value]="paymentMode()"
+                (change)="setPaymentMode($event.value)"
+                hideSingleSelectionIndicator
+              >
+                <mat-button-toggle value="mock">Tarjeta simulada</mat-button-toggle>
+                <mat-button-toggle value="stripe">Stripe</mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+          }
+
+          @if (paymentMode() === 'mock' || !stripeEnabled()) {
+            @if (profile()?.payment_methods?.length) {
+              <div class="mode-toggle">
+                <mat-radio-group
+                  class="source-radios"
+                  [value]="cardSource()"
+                  (change)="setCardSource($any($event).value)"
+                >
+                  <mat-radio-button value="saved">Tarjeta guardada</mat-radio-button>
+                  <mat-radio-button value="new">Nueva tarjeta</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            } @else {
+              <p class="inline-hint pad-x">
+                Añade tarjetas de prueba en
+                <a routerLink="/cuenta/pagos">Mi cuenta → Métodos de pago</a>.
+              </p>
+            }
+
+            <div class="test-cards-hint">
+              <p><strong>Tarjetas de prueba (simulación):</strong></p>
+              <ul>
+                <li><code>4242 4242 4242 4242</code> → Pago exitoso (Visa)</li>
+                <li><code>4000 0000 0000 0002</code> → Rechazada</li>
+                <li><code>4000 0000 0000 0077</code> → Pendiente</li>
+              </ul>
+            </div>
+
+            <mat-card-content>
+              <form [formGroup]="paymentForm" (ngSubmit)="onPay()">
+                @if (profile()?.payment_methods?.length && cardSource() === 'saved') {
+                  <mat-form-field appearance="outline" class="full">
+                    <mat-label>Tarjeta</mat-label>
+                    <mat-select
+                      [value]="selectedPaymentMethodId()"
+                      (selectionChange)="selectedPaymentMethodId.set($event.value)"
+                    >
+                      @for (pm of profile()!.payment_methods; track pm.id) {
+                        <mat-option [value]="pm.id">
+                          {{ pm.brand }} •••• {{ pm.last4 }} — {{ pm.expiry }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="full">
+                    <mat-label>CVV</mat-label>
+                    <input
+                      matInput
+                      formControlName="cvv"
+                      placeholder="123"
+                      type="password"
+                      maxlength="4"
+                      autocomplete="cc-csc"
+                    />
+                    <mat-icon matPrefix>lock</mat-icon>
+                    @if (paymentForm.get('cvv')?.invalid && paymentForm.get('cvv')?.touched) {
+                      <mat-error>3 o 4 dígitos</mat-error>
+                    }
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="full">
+                    <mat-label>Nombre en el recibo (opcional)</mat-label>
+                    <input matInput formControlName="card_holder" />
+                  </mat-form-field>
+                }
+
+                @if (cardSource() === 'new' || !profile()?.payment_methods?.length) {
+                  <div class="brand-row">
+                    @if (cardBrand() !== 'unknown') {
+                      <span class="card-brand-pill">{{ cardBrandLabel() }}</span>
+                    }
+                  </div>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Nombre del titular</mat-label>
+                    <input matInput formControlName="card_holder" placeholder="Juan García" />
+                    <mat-icon matPrefix>person</mat-icon>
+                    @if (paymentForm.get('card_holder')?.invalid && paymentForm.get('card_holder')?.touched) {
+                      <mat-error>Nombre requerido (mínimo 3 caracteres)</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Número de tarjeta</mat-label>
+                    <input
+                      matInput
+                      formControlName="card_number"
+                      placeholder="4242 4242 4242 4242"
+                      autocomplete="cc-number"
+                      (input)="formatCardNumber($event)"
+                    />
+                    <mat-icon matPrefix>credit_card</mat-icon>
+                    @if (paymentForm.get('card_number')?.invalid && paymentForm.get('card_number')?.touched) {
+                      <mat-error>Número válido (Luhn y longitud según marca)</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <div class="card-row">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Vencimiento</mat-label>
+                      <input
+                        matInput
+                        formControlName="expiry"
+                        placeholder="MM/YY"
+                        maxlength="5"
+                        autocomplete="cc-exp"
+                        (input)="formatExpiry($event)"
+                      />
+                      <mat-icon matPrefix>event</mat-icon>
+                      @if (paymentForm.get('expiry')?.invalid && paymentForm.get('expiry')?.touched) {
+                        <mat-error>MM/YY</mat-error>
+                      }
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>CVV</mat-label>
+                      <input
+                        matInput
+                        formControlName="cvv"
+                        placeholder="123"
+                        type="password"
+                        maxlength="4"
+                        autocomplete="cc-csc"
+                      />
+                      <mat-icon matPrefix>lock</mat-icon>
+                      @if (paymentForm.get('cvv')?.invalid && paymentForm.get('cvv')?.touched) {
+                        <mat-error>3 o 4 dígitos</mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+                }
+
+                <button
+                  mat-raised-button
+                  color="primary"
+                  type="submit"
+                  class="pay-btn"
+                  [disabled]="loading()"
+                >
+                  @if (loading()) {
+                    <ng-container>
+                      <mat-spinner diameter="20"></mat-spinner>
+                      Procesando...
+                    </ng-container>
+                  } @else {
+                    <ng-container>
+                      <mat-icon>lock</mat-icon>
+                      Pagar ${{ cartTotal() | number: '1.2-2' }}
+                    </ng-container>
+                  }
+                </button>
+              </form>
+            </mat-card-content>
+          } @else {
+            <mat-card-content>
+              <p class="stripe-hint">
+                Puedes usar una dirección guardada o nueva (arriba). El cobro con Stripe siempre usa el
+                formulario seguro de tarjeta siguiente (no las tarjetas guardadas de la cuenta).
+              </p>
+              <p class="stripe-hint">
+                Tarjeta de prueba: <code>4242 4242 4242 4242</code>. Configura
+                <code>STRIPE_SECRET_KEY</code> y <code>STRIPE_PUBLISHABLE_KEY</code> en el servidor.
+              </p>
+              <div #stripeMount class="stripe-mount"></div>
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                class="pay-btn"
+                (click)="onPay()"
+                [disabled]="loading()"
+              >
+                @if (loading()) {
+                  <ng-container>
+                    <mat-spinner diameter="20"></mat-spinner>
+                    Procesando...
+                  </ng-container>
+                } @else {
+                  <ng-container>
+                    <mat-icon>lock</mat-icon>
+                    Pagar con Stripe ${{ cartTotal() | number: '1.2-2' }}
+                  </ng-container>
+                }
+              </button>
+            </mat-card-content>
+          }
+        </mat-card>
+      </div>
+
+      <div class="summary-section">
+        <mat-card class="summary-card">
+          <mat-card-header>
+            <mat-card-title>Resumen del pedido</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @for (item of cart()?.items ?? []; track item.product_id) {
+              <div class="summary-item">
+                <span class="item-qty">{{ item.quantity }}×</span>
+                <span class="item-name">{{ item.name }}</span>
+                <span class="item-price">${{ (item.price * item.quantity) | number:'1.2-2' }}</span>
+              </div>
+            }
+            <mat-divider class="my-divider"></mat-divider>
+            <div class="summary-total">
+              <strong>Total</strong>
+              <strong class="total-amount">${{ cartTotal() | number: '1.2-2' }}</strong>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <a mat-button routerLink="/cart" class="back-cart">
+          <mat-icon>arrow_back</mat-icon>
+          Volver al carrito
+        </a>
+      </div>
+    </div>
+  }
+</div>

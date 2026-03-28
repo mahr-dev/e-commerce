@@ -1,0 +1,156 @@
+<div class="page-content">
+  <div class="page-header">
+    <h1>Mis Pedidos</h1>
+    @if (!loading()) {
+      <p class="subtitle">{{ orders().length }} pedido(s) en total</p>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Cargando pedidos...</p>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && orders().length === 0) {
+    <div class="empty-state">
+      <mat-icon>receipt_long</mat-icon>
+      <h3>No tienes pedidos aún</h3>
+      <p>Cuando realices una compra, aparecerá aquí</p>
+      <a mat-raised-button color="primary" routerLink="/products">
+        <mat-icon>grid_view</mat-icon>
+        Explorar productos
+      </a>
+    </div>
+  }
+
+  <!-- Orders list -->
+  @if (!loading() && orders().length > 0) {
+    <mat-accordion class="orders-list" multi>
+      @for (order of orders(); track order.id) {
+        <mat-expansion-panel class="order-panel">
+          <!-- Panel header -->
+          <mat-expansion-panel-header>
+            <mat-panel-title class="order-header-title">
+              <div class="order-meta">
+                <span class="order-id">
+                  <mat-icon>receipt</mat-icon>
+                  #{{ order.id | slice:0:8 | uppercase }}
+                </span>
+                <span class="order-date">
+                  {{ order.created_at | date:'dd/MM/yyyy HH:mm' }}
+                </span>
+              </div>
+            </mat-panel-title>
+            <mat-panel-description class="order-header-desc">
+              <div class="order-summary-row">
+                <span class="item-count">{{ getOrderItemsTotal(order) }} artículo(s)</span>
+                <strong class="order-total">${{ order.total | number:'1.2-2' }}</strong>
+                <span class="badge badge-{{ order.status }}">
+                  <mat-icon>{{ getStatusIcon(order.status) }}</mat-icon>
+                  {{ getStatusLabel(order.status) }}
+                </span>
+              </div>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <!-- Panel content: order details -->
+          <div class="order-detail">
+            <h4>Productos</h4>
+            <div class="order-items">
+              @for (item of order.items; track item.product_id) {
+                <div class="order-item">
+                  <div class="item-info">
+                    <span class="item-name">{{ item.name }}</span>
+                    <span class="item-qty">× {{ item.quantity }}</span>
+                  </div>
+                  <div class="item-prices">
+                    <span class="item-unit-price">${{ item.price | number:'1.2-2' }} c/u</span>
+                    <span class="item-subtotal">${{ (item.price * item.quantity) | number:'1.2-2' }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <mat-divider></mat-divider>
+
+            @if (getShipping(order)) {
+              <div class="shipping-block">
+                <h4>
+                  <mat-icon>place</mat-icon>
+                  Dirección de envío
+                </h4>
+                <p class="shipping-name">{{ getShipping(order)!.full_name }}</p>
+                <p class="shipping-lines">{{ formatAddressLine(order) }}</p>
+                @if (getShipping(order)!.phone) {
+                  <p class="shipping-phone">
+                    <mat-icon>phone</mat-icon>
+                    {{ getShipping(order)!.phone }}
+                  </p>
+                }
+              </div>
+              <mat-divider></mat-divider>
+            }
+
+            @if (order.tracking_number) {
+              <div class="tracking-block">
+                <h4>
+                  <mat-icon>local_shipping</mat-icon>
+                  Seguimiento
+                </h4>
+                <div class="tracking-meta">
+                  <span class="tracking-label">Número</span>
+                  <code class="tracking-code">{{ order.tracking_number }}</code>
+                  @if (order.carrier) {
+                    <span class="carrier">{{ order.carrier }}</span>
+                  }
+                </div>
+                @if (order.tracking_events?.length) {
+                  <ul class="tracking-timeline">
+                    @for (ev of order.tracking_events!; track ev.at + ev.description) {
+                      <li class="tracking-step">
+                        <span class="tracking-dot"></span>
+                        <div class="tracking-step-body">
+                          <span class="tracking-desc">{{ ev.description }}</span>
+                          <span class="tracking-when">{{ ev.at | date:'dd/MM/yyyy HH:mm' }}</span>
+                          @if (ev.location) {
+                            <span class="tracking-loc">{{ ev.location }}</span>
+                          }
+                        </div>
+                      </li>
+                    }
+                  </ul>
+                }
+              </div>
+              <mat-divider></mat-divider>
+            }
+
+            <!-- Order footer info -->
+            <div class="order-footer">
+              <div class="footer-row">
+                <span>Total:</span>
+                <strong class="total">${{ order.total | number:'1.2-2' }}</strong>
+              </div>
+              @if (order.payment_id) {
+                <div class="footer-row">
+                  <span>ID transacción:</span>
+                  <code>{{ order.payment_id }}</code>
+                </div>
+              }
+              <div class="footer-row">
+                <span>Estado:</span>
+                <span class="badge badge-{{ order.status }}">
+                  <mat-icon>{{ getStatusIcon(order.status) }}</mat-icon>
+                  {{ getStatusLabel(order.status) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  }
+</div>

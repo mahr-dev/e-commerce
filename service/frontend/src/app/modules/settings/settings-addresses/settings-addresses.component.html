@@ -1,0 +1,118 @@
+@if (loading()) {
+  <div class="loading-inline">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else {
+  <div class="addresses-stack">
+    <h2 class="section-heading">Direcciones guardadas</h2>
+    <p class="section-hint">Úsalas en el checkout o añade nuevas aquí.</p>
+
+    @for (a of addresses(); track a.id) {
+      <mat-card class="addr-card">
+        <mat-card-content>
+          <div class="addr-row">
+            <div>
+              <span class="addr-label">{{ a.label }}</span>
+              @if (a.is_default) {
+                <span class="addr-default">Predeterminada</span>
+              }
+              <p class="addr-name">{{ a.full_name }}</p>
+              <p class="addr-lines">
+                {{ a.line1 }}
+                @if (a.line2) {
+                  <br />{{ a.line2 }}
+                }
+                <br />
+                {{ a.postal_code }} {{ a.city }} ({{ a.state }}) — {{ a.country }}
+              </p>
+              @if (a.phone) {
+                <p class="addr-phone">{{ a.phone }}</p>
+              }
+            </div>
+            <div class="addr-actions">
+              <button mat-icon-button (click)="startEdit(a)" aria-label="Editar">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="remove(a)" aria-label="Eliminar">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (addresses().length === 0) {
+      <p class="empty-hint">Aún no tienes direcciones guardadas.</p>
+    }
+
+    <mat-divider class="sep"></mat-divider>
+
+    <h3 class="form-heading">{{ editingId() ? 'Editar dirección' : 'Añadir dirección' }}</h3>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Etiqueta</mat-label>
+          <input matInput formControlName="label" placeholder="Casa, Trabajo..." />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>País</mat-label>
+          <mat-select formControlName="country">
+            <mat-option value="ES">España</mat-option>
+            <mat-option value="MX">México</mat-option>
+            <mat-option value="AR">Argentina</mat-option>
+            <mat-option value="CO">Colombia</mat-option>
+            <mat-option value="US">EE.UU.</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Nombre completo</mat-label>
+        <input matInput formControlName="full_name" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Dirección línea 1</mat-label>
+        <input matInput formControlName="line1" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Línea 2 (opcional)</mat-label>
+        <input matInput formControlName="line2" />
+      </mat-form-field>
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Ciudad</mat-label>
+          <input matInput formControlName="city" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Provincia / Estado</mat-label>
+          <input matInput formControlName="state" />
+        </mat-form-field>
+      </div>
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Código postal</mat-label>
+          <input matInput formControlName="postal_code" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Teléfono</mat-label>
+          <input matInput formControlName="phone" type="tel" />
+        </mat-form-field>
+      </div>
+      <mat-checkbox formControlName="is_default" class="chk">
+        Usar como dirección predeterminada
+      </mat-checkbox>
+
+      <div class="form-actions">
+        @if (editingId()) {
+          <button mat-button type="button" (click)="cancelForm()">Cancelar edición</button>
+        }
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || saving()">
+          @if (saving()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          }
+          {{ editingId() ? 'Actualizar' : 'Guardar dirección' }}
+        </button>
+      </div>
+    </form>
+  </div>
+}

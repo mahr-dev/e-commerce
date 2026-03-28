@@ -1,0 +1,94 @@
+<div class="auth-page flex-center">
+  <div class="form-container">
+    <div class="text-center">
+      <div class="auth-icon-wrap">
+        <mat-icon class="auth-icon">person_add</mat-icon>
+      </div>
+      <h1 class="form-title">Crear cuenta</h1>
+      <p class="form-subtitle">Únete a ShopNow hoy</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Name -->
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre completo</mat-label>
+        <input matInput formControlName="name" placeholder="Tu nombre" />
+        <mat-icon matPrefix>person</mat-icon>
+        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+          <mat-error>
+            @if (form.get('name')?.hasError('required')) { El nombre es obligatorio }
+            @if (form.get('name')?.hasError('minlength')) { Mínimo 2 caracteres }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Email -->
+      <mat-form-field appearance="outline">
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="ejemplo@correo.com" />
+        <mat-icon matPrefix>email</mat-icon>
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          <mat-error>
+            @if (form.get('email')?.hasError('required')) { El email es obligatorio }
+            @if (form.get('email')?.hasError('email')) { Ingresa un email válido }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Password -->
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          [type]="hidePassword() ? 'password' : 'text'"
+          formControlName="password"
+        />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())">
+          <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          <mat-error>
+            @if (form.get('password')?.hasError('required')) { La contraseña es obligatoria }
+            @if (form.get('password')?.hasError('minlength')) { Mínimo 6 caracteres }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Confirm Password -->
+      <mat-form-field appearance="outline">
+        <mat-label>Confirmar contraseña</mat-label>
+        <input
+          matInput
+          [type]="hideConfirm() ? 'password' : 'text'"
+          formControlName="confirmPassword"
+        />
+        <mat-icon matPrefix>lock_reset</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="hideConfirm.set(!hideConfirm())">
+          <mat-icon>{{ hideConfirm() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched) {
+          <mat-error>Las contraseñas no coinciden</mat-error>
+        }
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="submit-btn"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          Crear cuenta
+        }
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a></p>
+    </div>
+  </div>
+</div>

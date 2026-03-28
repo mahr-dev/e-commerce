@@ -1,0 +1,831 @@
+/* ============================================================
+   Global Styles — ShopNow eCommerce
+   ============================================================ */
+
+/* Angular Material base reset */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--bg-page, #f3f4f8);
+  color: #212121;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   Layout Utilities
+   ============================================================ */
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.page-content {
+  padding: 32px 24px 48px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Títulos con tipografía de marca */
+h1,
+h2,
+.page-header h1,
+.form-title,
+.landing-hero__title,
+.landing-section-title {
+  font-family: var(--font-display);
+}
+
+/* Profundidad suave en la página (modo claro) */
+@media (prefers-reduced-motion: no-preference) {
+  body {
+    background-image:
+      radial-gradient(ellipse 100% 70% at 100% -15%, rgba(124, 77, 255, 0.1), transparent 52%),
+      radial-gradient(ellipse 70% 50% at 0% 105%, rgba(57, 73, 171, 0.08), transparent 48%),
+      linear-gradient(180deg, var(--bg-page) 0%, var(--bg-page) 100%);
+    background-attachment: fixed;
+  }
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* ============================================================
+   Card Styles
+   ============================================================ */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+}
+
+.product-card {
+  cursor: pointer;
+  border-radius: var(--radius-card) !important;
+  overflow: hidden;
+  border: 1px solid var(--border, #e2e6ef);
+  box-shadow: 0 4px 20px var(--shadow) !important;
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 48px var(--shadow-strong) !important;
+    border-color: rgba(57, 73, 171, 0.22);
+  }
+
+  .product-image,
+  img[mat-card-image] {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover .product-image,
+    &:hover img[mat-card-image] {
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* ============================================================
+   Status Badges
+   ============================================================ */
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-pending  { background-color: #fff3e0; color: #e65100; }
+.badge-paid     { background-color: #e8f5e9; color: #2e7d32; }
+.badge-failed   { background-color: #ffebee; color: #c62828; }
+.badge-shipped  { background-color: #e3f2fd; color: #1565c0; }
+.badge-cancelled{ background-color: #f3e5f5; color: #6a1b9a; }
+
+/* ============================================================
+   Form Styles
+   ============================================================ */
+
+.form-container {
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 32px;
+  background: var(--bg-surface, #fff);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border, #e2e6ef);
+  box-shadow: 0 8px 40px var(--shadow);
+}
+
+.form-container mat-form-field {
+  width: 100%;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #3f51b5;
+}
+
+.form-subtitle {
+  color: #757575;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+/* ============================================================
+   Loading & Empty States
+   ============================================================ */
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  gap: 16px;
+  color: #757575;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  gap: 16px;
+  text-align: center;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #bdbdbd;
+  }
+
+  h3 {
+    margin: 0;
+    color: #424242;
+    font-weight: 500;
+  }
+
+  p {
+    color: #757575;
+    margin: 0;
+  }
+}
+
+/* ============================================================
+   Dark Mode
+   ============================================================ */
+
+/* CSS custom properties — light defaults */
+:root {
+  --font-display:   "Plus Jakarta Sans", Roboto, system-ui, sans-serif;
+  --bg-page:        #f0f2f8;
+  --bg-surface:     #ffffff;
+  --bg-surface-2:   #f7f8fc;
+  --text-primary:   #1a1d26;
+  --text-secondary: #5c6378;
+  --text-muted:     #8b92a8;
+  --border:         #e2e6ef;
+  --shadow:         rgba(26, 29, 38, 0.08);
+  --shadow-strong:  rgba(57, 73, 171, 0.18);
+  --accent-bg:      #eef0fb;
+  --input-bg:       #ffffff;
+  --brand-indigo:   #3949ab;
+  --brand-violet:   #7c4dff;
+  --brand-coral:    #ff6b6b;
+  --radius-card:    16px;
+  --radius-pill:    999px;
+  --transition:     background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+html.dark-mode {
+  --bg-page:        #121218;
+  --bg-surface:     #1e1f28;
+  --bg-surface-2:   #262833;
+  --shadow-strong:  rgba(0, 0, 0, 0.55);
+  /* Texto claro — contraste uniforme en toda la app */
+  --text-primary:   #eceff4;
+  --text-secondary: #c9cfdf;
+  --text-muted:     #9aa3b8;
+  --border:         #3d3d3d;
+  --shadow:         rgba(0, 0, 0, 0.45);
+  --accent-bg:      #252a45;
+  --input-bg:       #2c2c2c;
+  color-scheme: dark;
+}
+
+/* Smooth theme switch without forcing every descendant to animate */
+html,
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ---- Base ---- */
+html {
+  background-color: var(--bg-page);
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+/* Legibilidad en modo oscuro: suavizado y espaciado */
+html.dark-mode body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.015em;
+  line-height: 1.55;
+}
+
+/* Material typography aplica gris oscuro por defecto */
+html.dark-mode body.mat-typography {
+  color: var(--text-primary) !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.dark-mode body {
+    background-image:
+      radial-gradient(ellipse 100% 55% at 85% -5%, rgba(124, 77, 255, 0.16), transparent 52%),
+      radial-gradient(ellipse 55% 40% at 0% 100%, rgba(92, 107, 192, 0.14), transparent 48%),
+      linear-gradient(180deg, var(--bg-page) 0%, var(--bg-page) 100%);
+    background-attachment: fixed;
+  }
+}
+
+html.dark-mode p,
+html.dark-mode .mat-mdc-card-content,
+html.dark-mode .product-description {
+  letter-spacing: 0.02em;
+}
+
+/* ---- Angular Material overrides (dark) ---- */
+html.dark-mode {
+  /* Cards */
+  .mat-mdc-card {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 2px 12px var(--shadow) !important;
+  }
+
+  /* Card header text */
+  .mat-mdc-card-title,
+  .mat-mdc-card-subtitle {
+    color: var(--text-primary) !important;
+  }
+
+  /* Form fields */
+  .mat-mdc-form-field {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--border) !important;
+    }
+
+    .mat-mdc-input-element,
+    .mat-mdc-select-value-text {
+      color: var(--text-primary) !important;
+    }
+
+    .mat-mdc-floating-label {
+      color: var(--text-secondary) !important;
+    }
+
+    .mat-mdc-form-field-hint {
+      color: var(--text-muted) !important;
+    }
+  }
+
+  /* Select panel / dropdown */
+  .mat-mdc-select-panel,
+  .mdc-menu-surface {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-option {
+    color: var(--text-primary) !important;
+
+    &:hover,
+    &.mdc-list-item--selected {
+      background-color: var(--bg-surface-2) !important;
+    }
+  }
+
+  /* Menus */
+  .mat-mdc-menu-panel {
+    background-color: var(--bg-surface) !important;
+  }
+
+  .mat-mdc-menu-item {
+    color: var(--text-primary) !important;
+
+    .mat-icon {
+      color: var(--text-secondary) !important;
+    }
+
+    &:hover {
+      background-color: var(--bg-surface-2) !important;
+    }
+  }
+
+  /* Expansion panels (orders) */
+  .mat-expansion-panel {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mat-expansion-panel-header-title,
+  .mat-expansion-panel-header-description {
+    color: var(--text-primary) !important;
+  }
+
+  /* Dividers */
+  .mat-divider {
+    border-color: var(--border) !important;
+  }
+
+  /* Stepper */
+  .mat-step-header .mat-step-label {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Snackbar */
+  .mat-mdc-snack-bar-container {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Spinner */
+  .mat-mdc-progress-spinner circle {
+    stroke: #7986cb !important;
+  }
+
+  /* Chips */
+  .mat-mdc-chip {
+    background-color: var(--bg-surface-2) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Toolbar (Material primary stays bright in prebuilt theme — tone down for dark UI) */
+  mat-toolbar.mat-primary,
+  .mat-toolbar.mat-primary {
+    background: linear-gradient(112deg, #1a237e 0%, #283593 45%, #4527a0 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 28px rgba(0, 0, 0, 0.45) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  /* Button toggle */
+  .mat-button-toggle-group {
+    background-color: var(--bg-surface-2) !important;
+    border-color: var(--border) !important;
+  }
+
+  .mat-button-toggle {
+    color: var(--text-secondary) !important;
+  }
+
+  .mat-button-toggle-checked {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Common buttons */
+  .mat-mdc-raised-button.mat-primary,
+  .mat-mdc-unelevated-button.mat-primary {
+    background-color: #5c6bc0 !important;
+    color: #fff !important;
+  }
+
+  .mat-mdc-outlined-button:not(.mat-warn) {
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+  }
+
+  .mat-mdc-raised-button.mat-accent,
+  .mat-mdc-unelevated-button.mat-accent {
+    background-color: #d81b60 !important;
+    color: #fff !important;
+  }
+
+  .mat-mdc-stroked-button:not(.mat-warn) {
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+  }
+
+  /* Dialog */
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Input autocomplete background (browser override) */
+  input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px var(--input-bg) inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+  }
+
+  /* Listas, pestañas y etiquetas (radio/checkbox) */
+  .mat-mdc-list-item .mdc-list-item__primary-text,
+  .mat-mdc-list-item-title {
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-list-item .mdc-list-item__secondary-text,
+  .mat-mdc-list-item-meta {
+    color: var(--text-secondary) !important;
+  }
+
+  .mdc-tab__text-label {
+    color: var(--text-secondary) !important;
+  }
+
+  .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-radio-button .mdc-label,
+  .mat-mdc-checkbox .mdc-label,
+  .mdc-form-field > label {
+    color: var(--text-primary) !important;
+  }
+
+  .mat-expansion-panel-body {
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-card-subtitle {
+    color: var(--text-secondary) !important;
+  }
+}
+
+/* ---- Custom component overrides ---- */
+html.dark-mode {
+  /* Page headers */
+  h1, h2, h3, h4 {
+    color: var(--text-primary);
+  }
+
+  /* Títulos con tinte marca (legibles sobre fondo oscuro) */
+  .page-header h1,
+  .page-title,
+  .form-title {
+    color: #d0d9ff !important;
+  }
+
+  .main-content {
+    background-color: var(--bg-page);
+  }
+
+  .user-menu-header .user-email {
+    color: var(--text-muted) !important;
+  }
+
+  /* Filters bar */
+  .filters-bar {
+    background-color: var(--bg-surface);
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  /* Category tag on product cards */
+  .category-tag {
+    background: var(--accent-bg);
+    color: #aeb8ff;
+  }
+
+  /* Product name */
+  .product-name {
+    color: var(--text-primary);
+  }
+
+  /* Description */
+  .product-description,
+  .form-subtitle,
+  .subtitle {
+    color: var(--text-secondary);
+  }
+
+  /* Precios e importes (acento claro) */
+  .price,
+  .summary-total .total-amount,
+  .item-subtotal,
+  .order-total,
+  .order-id {
+    color: #b4b9ff !important;
+  }
+
+  /* Form containers (login/register) */
+  .form-container {
+    background-color: var(--bg-surface);
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+
+  /* Cart items */
+  .cart-item {
+    background-color: var(--bg-surface);
+  }
+
+  .item-image-placeholder {
+    background-color: var(--bg-surface-2);
+  }
+
+  /* Item name link */
+  .item-name a {
+    color: var(--text-primary);
+
+    &:hover {
+      color: #d0d9ff;
+    }
+  }
+
+  /* Order items */
+  .order-item {
+    background-color: var(--bg-surface-2);
+  }
+
+  /* Summary card */
+  .summary-row {
+    color: var(--text-secondary);
+  }
+
+  /* Test hint boxes */
+  .test-cards-hint {
+    background: #1a2030;
+    border-color: #2a3a5a;
+    color: #90caf9;
+
+    code {
+      background: var(--bg-surface-2);
+    }
+  }
+
+  .test-hint {
+    background: #2a2000;
+    border-color: #5a4000;
+    color: #ffd54f;
+  }
+
+  /* Detail page */
+  .product-image {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Status badges (adjusted for dark) */
+  .badge-pending   { background-color: #2a1800; color: #ffb74d; }
+  .badge-paid      { background-color: #0a2010; color: #81c784; }
+  .badge-failed    { background-color: #2a0808; color: #ef9a9a; }
+  .badge-shipped   { background-color: #0a1828; color: #64b5f6; }
+  .badge-cancelled { background-color: #1e0a2a; color: #ce93d8; }
+
+  /* Stock badges */
+  .low-stock  { background: #2a1800; color: #ffb74d; }
+  .out-of-stock { background: #2a0808; color: #ef9a9a; }
+  .in-stock   { background: #0a2010; color: #81c784; }
+
+  /* Qty controls */
+  .qty-display {
+    color: var(--text-primary);
+  }
+
+  /* Empty state icon */
+  .empty-state mat-icon {
+    color: var(--text-muted);
+  }
+
+  /* Loading text */
+  .loading-container {
+    color: var(--text-secondary);
+  }
+
+  /* Result card backgrounds */
+  .result-card {
+    background-color: var(--bg-surface) !important;
+  }
+
+  .result-details {
+    background-color: var(--bg-surface-2);
+  }
+
+  /* Order meta */
+  .order-date {
+    color: var(--text-muted);
+  }
+
+  /* Footer rows */
+  .footer-row,
+  .summary-row {
+    color: var(--text-secondary);
+  }
+
+  /* Enlaces de contenido (no barra superior) */
+  .page-content a[routerLink]:not(.mat-mdc-button):not(.mat-mdc-raised-button):not(
+      .mat-mdc-outlined-button
+    ):not(.mat-mdc-unelevated-button):not(.mat-mdc-icon-button) {
+    color: #c5cae9 !important;
+  }
+
+  .page-content a[routerLink]:not(.mat-mdc-button):hover {
+    color: #e8eaf6 !important;
+  }
+
+  /* Estados vacíos */
+  .empty-state h3 {
+    color: var(--text-primary) !important;
+  }
+
+  .empty-state p {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Textos fijados en gris oscuro en componentes (pedidos, cuenta, carrito) */
+  .item-price,
+  .item-count,
+  .shipping-lines,
+  .shipping-phone,
+  .section-hint,
+  .empty-hint,
+  .addr-lines,
+  .addr-phone,
+  .pm-exp,
+  .pm-label,
+  .tracking-label,
+  .tracking-when,
+  .item-qty,
+  .item-unit-price,
+  .tracking-loc,
+  .carrier {
+    color: var(--text-secondary) !important;
+  }
+
+  .order-item .item-info .item-name,
+  .shipping-name,
+  .tracking-desc,
+  .addr-name,
+  .pm-pan,
+  .section-heading,
+  .form-heading,
+  .order-detail h4,
+  .shipping-block h4,
+  .tracking-block h4 {
+    color: var(--text-primary) !important;
+  }
+
+  .summary-row.total,
+  .order-footer .footer-row .total {
+    color: var(--text-primary) !important;
+  }
+
+  .order-footer .footer-row .total strong,
+  .summary-row.total strong {
+    color: #b4b9ff !important;
+  }
+
+  .settings-title {
+    color: #d0d9ff !important;
+  }
+
+  .settings-nav-card a[mat-list-item].active,
+  .settings-nav-card a[mat-list-item].active mat-icon {
+    color: #d0d9ff !important;
+  }
+
+  .settings-nav-card a[mat-list-item].active {
+    background: rgba(159, 168, 218, 0.16) !important;
+  }
+
+  .tracking-code {
+    background: var(--accent-bg) !important;
+    color: #b3d7ff !important;
+    border: 1px solid var(--border);
+  }
+
+  .order-footer .footer-row code {
+    background: var(--bg-surface-2) !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--border);
+  }
+
+  .tracking-step:not(:last-child)::before {
+    background: var(--border) !important;
+  }
+
+  .tracking-dot {
+    border-color: var(--bg-surface) !important;
+    box-shadow: 0 0 0 1px var(--border) !important;
+  }
+
+  /* Checkout: títulos de resultado */
+  .result-card.success h2 {
+    color: #a5d6a7 !important;
+  }
+
+  .result-card.failure h2 {
+    color: #ffab91 !important;
+  }
+
+  .result-card.pending h2 {
+    color: #ffcc80 !important;
+  }
+
+  .result-card p:not(.result-message) {
+    color: var(--text-secondary) !important;
+  }
+
+  .settings-subtitle {
+    color: var(--text-secondary) !important;
+  }
+
+  .description-section h3,
+  .qty-section h3 {
+    color: var(--text-secondary) !important;
+  }
+
+  .description-section p {
+    color: var(--text-secondary) !important;
+  }
+
+  .product-title {
+    color: var(--text-primary) !important;
+  }
+
+  .checkout-page-header h1 {
+    color: #d0d9ff !important;
+  }
+
+  .checkout-page-header .subtitle {
+    color: var(--text-secondary) !important;
+  }
+
+  .result-message {
+    color: var(--text-secondary) !important;
+  }
+
+  .result-details .detail-row span {
+    color: var(--text-secondary) !important;
+  }
+
+  .result-details .detail-row strong {
+    color: var(--text-primary) !important;
+  }
+
+  .addr-default,
+  .pm-default {
+    background: rgba(76, 175, 80, 0.22) !important;
+    color: #c8e6c9 !important;
+  }
+
+  .mat-mdc-slide-toggle .mdc-form-field,
+  .mat-mdc-slide-toggle .mdc-label {
+    color: var(--text-primary) !important;
+  }
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .page-content {
+    padding: 16px;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .form-container {
+    padding: 24px 16px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}

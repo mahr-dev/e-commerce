@@ -1,0 +1,123 @@
+<div class="page-content">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Catálogo de Productos</h1>
+    <p class="subtitle">{{ products().length }} producto(s) encontrado(s)</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-bar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Buscar productos</mat-label>
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+        placeholder="Nombre o descripción..."
+      />
+      <mat-icon matPrefix>search</mat-icon>
+      @if (searchQuery) {
+        <button mat-icon-button matSuffix (click)="searchQuery = ''; onSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="category-field">
+      <mat-label>Categoría</mat-label>
+      <mat-select [(ngModel)]="selectedCategory" (selectionChange)="onCategoryChange()">
+        <mat-option value="">Todas las categorías</mat-option>
+        @for (cat of categories(); track cat) {
+          <mat-option [value]="cat">{{ cat | titlecase }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="onSearch()">
+      <mat-icon>filter_list</mat-icon>
+      Buscar
+    </button>
+
+    @if (searchQuery || selectedCategory) {
+      <button mat-button color="warn" (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Limpiar
+      </button>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Cargando productos...</p>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && products().length === 0) {
+    <div class="empty-state">
+      <mat-icon>inventory_2</mat-icon>
+      <h3>No se encontraron productos</h3>
+      <p>Prueba con otros filtros de búsqueda</p>
+      <button mat-raised-button color="primary" (click)="clearFilters()">
+        Ver todos los productos
+      </button>
+    </div>
+  }
+
+  <!-- Product grid -->
+  @if (!loading() && products().length > 0) {
+    <div class="card-grid">
+      @for (product of products(); track product.id) {
+        <mat-card class="product-card" [routerLink]="['/products', product.id]">
+          <img
+            mat-card-image
+            [src]="product.image"
+            [alt]="product.name"
+            class="product-image"
+            loading="lazy"
+          />
+          <mat-card-content>
+            @if (product.category) {
+              <span class="category-tag">{{ product.category }}</span>
+            }
+            <h3 class="product-name" [title]="product.name">{{ product.name }}</h3>
+            <p class="product-description">{{ product.description }}</p>
+            <div class="price-row">
+              <span class="price">${{ product.price | number: '1.2-2' }}</span>
+              @if (product.stock <= 3 && product.stock > 0) {
+                <span class="low-stock">Solo {{ product.stock }} restantes</span>
+              }
+              @if (product.stock === 0) {
+                <span class="out-of-stock">Agotado</span>
+              }
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button
+              mat-raised-button
+              color="primary"
+              class="add-btn"
+              [disabled]="product.stock === 0 || addingToCart() === product.id"
+              (click)="addToCart(product, $event)"
+              [matTooltip]="product.stock === 0 ? 'Sin stock disponible' : 'Agregar al carrito'"
+            >
+              @if (addingToCart() === product.id) {
+                <mat-spinner diameter="18"></mat-spinner>
+              } @else {
+                <mat-icon>add_shopping_cart</mat-icon>
+              }
+              {{ product.stock === 0 ? 'Agotado' : 'Agregar' }}
+            </button>
+
+            <button mat-icon-button color="accent" [routerLink]="['/products', product.id]" matTooltip="Ver detalle">
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

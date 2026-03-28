@@ -1,0 +1,108 @@
+<div class="page-content">
+  <!-- Back button -->
+  <a mat-stroked-button routerLink="/products" class="back-btn">
+    <mat-icon>arrow_back</mat-icon>
+    Volver al catálogo
+  </a>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="56"></mat-spinner>
+      <p>Cargando producto...</p>
+    </div>
+  }
+
+  @if (!loading() && product()) {
+    <div class="detail-layout">
+      <!-- Product image -->
+      <div class="image-section">
+        <img
+          [src]="product()!.image"
+          [alt]="product()!.name"
+          class="product-image"
+        />
+        @if (product()!.category) {
+          <div class="category-badge">
+            <mat-icon>label</mat-icon>
+            {{ product()!.category }}
+          </div>
+        }
+      </div>
+
+      <!-- Product info -->
+      <div class="info-section">
+        <h1 class="product-title">{{ product()!.name }}</h1>
+
+        <div class="price-display">
+          <span class="price">${{ product()!.price | number: '1.2-2' }}</span>
+          @if (product()!.stock > 0) {
+            <span class="stock-badge in-stock">
+              <mat-icon>check_circle</mat-icon>
+              En stock ({{ product()!.stock }} disponibles)
+            </span>
+          } @else {
+            <span class="stock-badge out-of-stock">
+              <mat-icon>cancel</mat-icon>
+              Agotado
+            </span>
+          }
+        </div>
+
+        <mat-divider class="divider"></mat-divider>
+
+        <div class="description-section">
+          <h3>Descripción</h3>
+          <p>{{ product()!.description }}</p>
+        </div>
+
+        @if (product()!.stock > 0) {
+          <div class="qty-section">
+            <h3>Cantidad</h3>
+            <div class="qty-controls">
+              <button mat-icon-button (click)="decreaseQty()" [disabled]="quantity <= 1">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="qty-display">{{ quantity }}</span>
+              <button mat-icon-button (click)="increaseQty()" [disabled]="quantity >= product()!.stock">
+                <mat-icon>add</mat-icon>
+              </button>
+              <span class="qty-max">de {{ product()!.stock }}</span>
+            </div>
+          </div>
+        }
+
+        <div class="actions">
+          <button
+            mat-raised-button
+            color="primary"
+            class="add-to-cart-btn"
+            [disabled]="product()!.stock === 0 || addingToCart()"
+            (click)="addToCart()"
+          >
+            @if (addingToCart()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <mat-icon>shopping_cart</mat-icon>
+            }
+            {{ product()!.stock === 0 ? 'Agotado' : 'Agregar al carrito' }}
+          </button>
+
+          @if (isAuthenticated()) {
+            <a mat-stroked-button routerLink="/cart">
+              <mat-icon>shopping_bag</mat-icon>
+              Ver carrito
+            </a>
+          }
+        </div>
+
+        <!-- Subtotal preview -->
+        @if (product()!.stock > 0) {
+          <div class="subtotal-preview">
+            <span>Subtotal:</span>
+            <strong>${{ (product()!.price * quantity) | number: '1.2-2' }}</strong>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

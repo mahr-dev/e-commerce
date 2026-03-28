@@ -1,0 +1,147 @@
+<div class="landing">
+  <section class="landing-hero">
+    <div class="landing-hero__bg" aria-hidden="true"></div>
+    <div class="landing-hero__content container">
+      <p class="landing-hero__eyebrow">ShopNow · Tu tienda online</p>
+      <h1 class="landing-hero__title">
+        Compra con estilo.<br />
+        <span class="landing-hero__title-accent">Envío rápido y pago seguro.</span>
+      </h1>
+      <p class="landing-hero__lead">
+        Descubre electrónica y accesorios seleccionados. Ofertas, más vendidos y una experiencia pensada para ti.
+      </p>
+      <div class="landing-hero__actions">
+        <a mat-raised-button color="primary" class="landing-cta" routerLink="/products">
+          <mat-icon>shopping_bag</mat-icon>
+          Ver catálogo
+        </a>
+        @if (!isAuthenticated()) {
+          <a mat-stroked-button class="landing-cta-secondary" routerLink="/auth/register">
+            Crear cuenta
+          </a>
+        } @else {
+          <a mat-stroked-button class="landing-cta-secondary" routerLink="/cart">
+            Ir al carrito
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-trust" aria-label="Ventajas de comprar aquí">
+    <div class="container">
+      <ul class="landing-trust__list">
+        <li class="trust-chip">
+          <mat-icon aria-hidden="true">workspace_premium</mat-icon>
+          <span>Calidad seleccionada</span>
+        </li>
+        <li class="trust-chip">
+          <mat-icon aria-hidden="true">local_shipping</mat-icon>
+          <span>Envío con seguimiento</span>
+        </li>
+        <li class="trust-chip">
+          <mat-icon aria-hidden="true">lock</mat-icon>
+          <span>Pago en entorno seguro</span>
+        </li>
+        <li class="trust-chip">
+          <mat-icon aria-hidden="true">replay</mat-icon>
+          <span>Historial de pedidos claro</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="landing-bestsellers" aria-labelledby="bestsellers-heading">
+    <div class="container">
+      <div class="landing-bestsellers__head">
+        <div>
+          <h2 id="bestsellers-heading" class="landing-section-title">Los más vendidos</h2>
+          <p class="landing-section-sub">Lo que más eligen nuestros clientes esta temporada</p>
+        </div>
+        <div class="landing-bestsellers__nav">
+          <button
+            mat-mini-fab
+            type="button"
+            class="slider-fab"
+            (click)="scrollSlider(-1)"
+            aria-label="Anterior"
+          >
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            type="button"
+            class="slider-fab"
+            (click)="scrollSlider(1)"
+            aria-label="Siguiente"
+          >
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      @if (loadingBestsellers()) {
+        <div class="landing-bestsellers__loading">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else if (bestsellers().length === 0) {
+        <p class="landing-empty">Pronto tendremos datos de ventas para mostrar aquí.</p>
+      } @else {
+        <div class="slider-shell">
+          <div #bestsellerSlider class="bestseller-slider" tabindex="0">
+            @for (p of bestsellers(); track p.id) {
+              <a class="bestseller-slide" [routerLink]="['/products', p.id]">
+                <div class="bestseller-slide__media">
+                  <img [src]="p.image" [alt]="p.name" loading="lazy" />
+                  @if (p.sold_count != null && p.sold_count > 0) {
+                    <span class="bestseller-slide__badge">Top ventas</span>
+                  }
+                </div>
+                <div class="bestseller-slide__body">
+                  <h3 class="bestseller-slide__name">{{ p.name }}</h3>
+                  @if (p.sold_count != null && p.sold_count > 0) {
+                    <span class="bestseller-slide__sold">{{ p.sold_count }} vendidos</span>
+                  }
+                  <span class="bestseller-slide__price">${{ p.price | number: '1.2-2' }}</span>
+                </div>
+              </a>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="landing-features">
+    <div class="container landing-features__grid">
+      <article class="feature-card">
+        <mat-icon class="feature-card__icon">local_shipping</mat-icon>
+        <h3>Envío y seguimiento</h3>
+        <p>Preparación rápida y número de seguimiento en cada pedido pagado.</p>
+      </article>
+      <article class="feature-card">
+        <mat-icon class="feature-card__icon">verified_user</mat-icon>
+        <h3>Pago protegido</h3>
+        <p>Checkout con dirección clara y opción de pago simulado o Stripe en test.</p>
+      </article>
+      <article class="feature-card">
+        <mat-icon class="feature-card__icon">support_agent</mat-icon>
+        <h3>Soporte ShopNow</h3>
+        <p>Tu historial de pedidos y estado del envío en un solo lugar.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="landing-cta-bottom">
+    <div class="container landing-cta-bottom__inner">
+      <div class="landing-cta-bottom__panel">
+        <h2>¿Listo para explorar?</h2>
+        <p>Catálogo completo, búsqueda rápida y filtros por categoría. Empieza en segundos.</p>
+        <a mat-raised-button color="accent" class="landing-cta-bottom__btn" routerLink="/products">
+          Explorar productos
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,344 @@
+[
+  {
+    "id": "prod-001",
+    "name": "Laptop Pro 15",
+    "description": "Laptop de alto rendimiento con pantalla de 15 pulgadas, Intel Core i7 de 12a generación, 16GB RAM DDR5, 512GB SSD NVMe. Ideal para profesionales y desarrolladores.",
+    "price": 1299.99,
+    "image": "https://picsum.photos/seed/laptop/400/300",
+    "stock": 10,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-002",
+    "name": "Smartphone Galaxy X12",
+    "description": "Smartphone de última generación con pantalla AMOLED de 6.7 pulgadas, cámara triple de 108MP, batería de 5000mAh y carga rápida de 65W.",
+    "price": 849.99,
+    "image": "https://picsum.photos/seed/phone/400/300",
+    "stock": 25,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-003",
+    "name": "Auriculares Noise Cancelling Pro",
+    "description": "Auriculares inalámbricos over-ear con cancelación activa de ruido de última generación. Hasta 30 horas de autonomía, drivers de 40mm de alta fidelidad.",
+    "price": 249.99,
+    "image": "https://picsum.photos/seed/headphones/400/300",
+    "stock": 50,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-004",
+    "name": "Smartwatch Serie 8",
+    "description": "Reloj inteligente con pantalla Always-On de 1.9 pulgadas, sensor de temperatura corporal, ECG, SpO2, GPS integrado y resistencia al agua 50m.",
+    "price": 399.99,
+    "image": "https://picsum.photos/seed/watch/400/300",
+    "stock": 30,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-005",
+    "name": "Tablet Ultra 11",
+    "description": "Tablet profesional con pantalla OLED de 11 pulgadas 120Hz, chip M2, 8GB RAM, 256GB almacenamiento. Compatible con lápiz óptico y teclado.",
+    "price": 699.99,
+    "image": "https://picsum.photos/seed/tablet/400/300",
+    "stock": 15,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-006",
+    "name": "Cámara Mirrorless 4K",
+    "description": "Cámara sin espejo con sensor full-frame de 45MP, grabación 4K 60fps, estabilización de imagen de 5 ejes, doble ranura para tarjetas SD.",
+    "price": 2199.99,
+    "image": "https://picsum.photos/seed/camera/400/300",
+    "stock": 8,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-007",
+    "name": "Teclado Mecánico RGB",
+    "description": "Teclado mecánico gaming con switches Cherry MX Red, iluminación RGB por tecla, construcción en aluminio, anti-ghosting completo y USB-C.",
+    "price": 129.99,
+    "image": "https://picsum.photos/seed/keyboard/400/300",
+    "stock": 40,
+    "category": "accessories"
+  },
+  {
+    "id": "prod-008",
+    "name": "Monitor UltraWide 34",
+    "description": "Monitor curvo ultrawide de 34 pulgadas, resolución 3440x1440, panel IPS 144Hz, 1ms tiempo de respuesta, compatible con G-Sync y FreeSync.",
+    "price": 649.99,
+    "image": "https://picsum.photos/seed/monitor/400/300",
+    "stock": 12,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-009",
+    "name": "Mouse Ergonómico Pro",
+    "description": "Ratón ergonómico inalámbrico con sensor de 25,600 DPI, 11 botones programables, batería de 70 horas, compatible con múltiples dispositivos.",
+    "price": 89.99,
+    "image": "https://picsum.photos/seed/mouse/400/300",
+    "stock": 60,
+    "category": "accessories"
+  },
+  {
+    "id": "prod-010",
+    "name": "SSD Externo 2TB",
+    "description": "Unidad SSD externa portátil de 2TB con velocidades de lectura/escritura de hasta 2000MB/s, conector USB-C 3.2, resistente a golpes y agua IP55.",
+    "price": 179.99,
+    "image": "https://picsum.photos/seed/ssd/400/300",
+    "stock": 35,
+    "category": "storage"
+  },
+  {
+    "id": "prod-011",
+    "name": "Router Wi-Fi 6E Mesh",
+    "description": "Sistema de red mesh tri-banda Wi-Fi 6E con cobertura de hasta 600m², velocidades de hasta 6.6Gbps, 8 antenas externas, gestión desde app.",
+    "price": 299.99,
+    "image": "https://picsum.photos/seed/router/400/300",
+    "stock": 20,
+    "category": "networking"
+  },
+  {
+    "id": "prod-012",
+    "name": "Silla Gamer Ergonómica",
+    "description": "Silla gaming con soporte lumbar ajustable, reposabrazos 4D, reclinable hasta 180°, tapizado en cuero PU transpirable, soporte hasta 150kg.",
+    "price": 349.99,
+    "image": "https://picsum.photos/seed/chair/400/300",
+    "stock": 18,
+    "category": "furniture"
+  },
+  {
+    "id": "prod-013",
+    "name": "Computadoras All-in-One 24\"",
+    "description": "Computadoras todo en uno con pantalla Full HD de 24 pulgadas, Intel Core i5, 16GB RAM y SSD 512GB. Perfectas para oficina y estudio.",
+    "price": 899.99,
+    "image": "https://picsum.photos/seed/aio/400/300",
+    "stock": 14,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-014",
+    "name": "PC Torre Gaming RGB",
+    "description": "Torre gaming con RTX 4070, AMD Ryzen 7, 32GB DDR5 y refrigeración líquida. Incluye Windows 11 preinstalado.",
+    "price": 1899.99,
+    "image": "https://picsum.photos/seed/pctower/400/300",
+    "stock": 9,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-015",
+    "name": "Chromebook Educación 14",
+    "description": "Portátil ligero tipo Chromebook para estudiantes, pantalla 14\", 8GB RAM, batería de larga duración y teclado resistente a derrames.",
+    "price": 329.99,
+    "image": "https://picsum.photos/seed/chromebook/400/300",
+    "stock": 40,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-016",
+    "name": "Webcam 4K Pro Stream",
+    "description": "Cámara web 4K con enfoque automático, micrófonos duales con cancelación de ruido y anillo de luz integrado.",
+    "price": 149.99,
+    "image": "https://picsum.photos/seed/webcam/400/300",
+    "stock": 55,
+    "category": "accessories"
+  },
+  {
+    "id": "prod-017",
+    "name": "Micrófono USB Podcast",
+    "description": "Micrófono condensador USB para streaming y podcast, patrón cardioide, soporte antivibración y monitorización zero-latency.",
+    "price": 119.99,
+    "image": "https://picsum.photos/seed/mic/400/300",
+    "stock": 33,
+    "category": "accessories"
+  },
+  {
+    "id": "prod-018",
+    "name": "Hub USB-C 12 en 1",
+    "description": "Estación de acoplamiento con HDMI 4K, Ethernet, lector SD, USB-A 3.0 y carga PD 100W passthrough.",
+    "price": 79.99,
+    "image": "https://picsum.photos/seed/hub/400/300",
+    "stock": 70,
+    "category": "accessories"
+  },
+  {
+    "id": "prod-019",
+    "name": "NAS 4 bahías 16TB",
+    "description": "Sistema NAS doméstico con 4 bahías, RAID configurable, app móvil y transcodificación de vídeo en tiempo real.",
+    "price": 799.99,
+    "image": "https://picsum.photos/seed/nas/400/300",
+    "stock": 11,
+    "category": "storage"
+  },
+  {
+    "id": "prod-020",
+    "name": "Disco HDD Interno 8TB",
+    "description": "Duro interno 3.5\" 7200rpm, caché 256MB, ideal para almacenamiento masivo y servidores domésticos.",
+    "price": 159.99,
+    "image": "https://picsum.photos/seed/hdd/400/300",
+    "stock": 28,
+    "category": "storage"
+  },
+  {
+    "id": "prod-021",
+    "name": "Switch PoE 24 puertos",
+    "description": "Switch administrable Gigabit con 24 puertos PoE+ para cámaras IP y puntos de acceso Wi-Fi empresariales.",
+    "price": 449.99,
+    "image": "https://picsum.photos/seed/switch/400/300",
+    "stock": 16,
+    "category": "networking"
+  },
+  {
+    "id": "prod-022",
+    "name": "Firewall doméstico",
+    "description": "Firewall de hardware con IDS/IPS, VPN WireGuard y control parental por perfil. Hasta 2.5 Gbps de throughput.",
+    "price": 259.99,
+    "image": "https://picsum.photos/seed/firewall/400/300",
+    "stock": 22,
+    "category": "networking"
+  },
+  {
+    "id": "prod-023",
+    "name": "Escritorio elevable motor",
+    "description": "Mesa de pie regulable en altura con motor dual, memoria de posiciones y tablero de roble 140x70 cm.",
+    "price": 529.99,
+    "image": "https://picsum.photos/seed/desk/400/300",
+    "stock": 10,
+    "category": "furniture"
+  },
+  {
+    "id": "prod-024",
+    "name": "Lámpara LED escritorio",
+    "description": "Lámpara de mesa con temperatura de color ajustable, puerto USB de carga y brazo articulado metálico.",
+    "price": 49.99,
+    "image": "https://picsum.photos/seed/lamp/400/300",
+    "stock": 85,
+    "category": "home"
+  },
+  {
+    "id": "prod-025",
+    "name": "Purificador de aire HEPA",
+    "description": "Purificador para habitaciones hasta 40 m², filtro HEPA H13, sensor PM2.5 y modo nocturno silencioso.",
+    "price": 199.99,
+    "image": "https://picsum.photos/seed/air/400/300",
+    "stock": 24,
+    "category": "home"
+  },
+  {
+    "id": "prod-026",
+    "name": "Robot aspirador láser",
+    "description": "Aspirador robot con mapeo LIDAR, mopas vibratorias y base autovaciado. Compatible con asistentes de voz.",
+    "price": 649.99,
+    "image": "https://picsum.photos/seed/robotvac/400/300",
+    "stock": 19,
+    "category": "home"
+  },
+  {
+    "id": "prod-027",
+    "name": "Bicicleta estática magnética",
+    "description": "Bici indoor con resistencia magnética, soporte para tablet y sensores de frecuencia cardíaca Bluetooth.",
+    "price": 379.99,
+    "image": "https://picsum.photos/seed/bike/400/300",
+    "stock": 15,
+    "category": "sports"
+  },
+  {
+    "id": "prod-028",
+    "name": "Esterilla yoga premium",
+    "description": "Esterilla antideslizante 6mm de grosor, material ecológico TPE, incluye correa de transporte.",
+    "price": 39.99,
+    "image": "https://picsum.photos/seed/yoga/400/300",
+    "stock": 100,
+    "category": "sports"
+  },
+  {
+    "id": "prod-029",
+    "name": "Altavoz Bluetooth impermeable",
+    "description": "Altavoz portátil IPX7, batería 24h, sonido 360° y emparejamiento estéreo inalámbrico.",
+    "price": 89.99,
+    "image": "https://picsum.photos/seed/speaker/400/300",
+    "stock": 45,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-030",
+    "name": "Libro técnico — Arquitectura software",
+    "description": "Guía práctica de patrones de diseño y clean architecture. Edición en español, tapa dura.",
+    "price": 42.99,
+    "image": "https://picsum.photos/seed/booktech/400/300",
+    "stock": 200,
+    "category": "books"
+  },
+  {
+    "id": "prod-031",
+    "name": "Novela ciencia ficción — Nebula",
+    "description": "Bestseller de ciencia ficción: colonias en el cinturón de asteroides y conflictos políticos interestelares.",
+    "price": 18.99,
+    "image": "https://picsum.photos/seed/scifi/400/300",
+    "stock": 350,
+    "category": "books"
+  },
+  {
+    "id": "prod-032",
+    "name": "Set construcción STEM niños",
+    "description": "Kit educativo 200 piezas con engranajes y motores para aprender mecánica básica. Edad 8+.",
+    "price": 59.99,
+    "image": "https://picsum.photos/seed/stem/400/300",
+    "stock": 60,
+    "category": "toys"
+  },
+  {
+    "id": "prod-033",
+    "name": "Drone mini cámara HD",
+    "description": "Drone plegable con cámara 1080p, estabilización electrónica y vuelo de hasta 25 minutos por batería.",
+    "price": 279.99,
+    "image": "https://picsum.photos/seed/drone/400/300",
+    "stock": 30,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-034",
+    "name": "Gafas realidad virtual standalone",
+    "description": "Visor VR autónomo con seguimiento de manos, resolución 4K por ojo y catálogo de juegos incluido.",
+    "price": 499.99,
+    "image": "https://picsum.photos/seed/vr/400/300",
+    "stock": 12,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-035",
+    "name": "Impresora multifunción láser",
+    "description": "Impresora láser color con escáner ADF, Wi-Fi, impresión a doble cara automática y tóner de larga duración.",
+    "price": 419.99,
+    "image": "https://picsum.photos/seed/printer/400/300",
+    "stock": 17,
+    "category": "electronics"
+  },
+  {
+    "id": "prod-036",
+    "name": "Cable USB-C Thunderbolt 4",
+    "description": "Cable certificado 2m, 40Gbps, carga 240W, compatible con monitores 8K y docks Thunderbolt.",
+    "price": 34.99,
+    "image": "https://picsum.photos/seed/cable/400/300",
+    "stock": 120,
+    "category": "accessories"
+  },
+  {
+    "id": "prod-037",
+    "name": "Mochila antirrobo laptop 17\"",
+    "description": "Mochila urbana con compartimento acolchado, puerto USB externo y material repelente al agua.",
+    "price": 69.99,
+    "image": "https://picsum.photos/seed/backpack/400/300",
+    "stock": 44,
+    "category": "accessories"
+  },
+  {
+    "id": "prod-038",
+    "name": "Mini PC compacto",
+    "description": "Mini computadora con CPU de última generación, ideal como HTPC o servidor silencioso en salón. 16GB RAM, SSD 1TB.",
+    "price": 599.99,
+    "image": "https://picsum.photos/seed/minipc/400/300",
+    "stock": 21,
+    "category": "electronics"
+  }
+]

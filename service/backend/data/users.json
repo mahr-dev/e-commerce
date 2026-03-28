@@ -1,0 +1,52 @@
+[
+  {
+    "id": "user-001",
+    "email": "admin@ecommerce.com",
+    "name": "Admin User",
+    "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+    "phone": null,
+    "addresses": [],
+    "payment_methods": []
+  },
+  {
+    "id": "user-002",
+    "email": "john@example.com",
+    "name": "John Doe",
+    "password": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "phone": null,
+    "addresses": [],
+    "payment_methods": []
+  },
+  {
+    "id": "670f9c6d-be03-4a17-9cd3-d1d4f9f8d3ee",
+    "email": "mhernandezrdz96@gmail.com",
+    "name": "Miguel Hernandez",
+    "password": "72f938ce9b05e843cacc6a7bc31ea831d3d61c56fd1052b18ce257fce8b5ddff",
+    "phone": "8342154699",
+    "addresses": [
+      {
+        "label": "Casa",
+        "full_name": "Barcelona 376",
+        "line1": "Fraccionamiento Gran Via",
+        "line2": null,
+        "city": "Ciudad Victoria",
+        "state": "Tamulipas",
+        "postal_code": "87100",
+        "country": "MX",
+        "phone": "8342154699",
+        "is_default": true,
+        "id": "2da017fd-5b61-421a-94fb-c6fe57deb8c3"
+      }
+    ],
+    "payment_methods": [
+      {
+        "id": "b6453c69-f46d-4af1-bad8-c649b6633d7f",
+        "brand": "Visa",
+        "last4": "1234",
+        "expiry": "12/28",
+        "label": "Tarjeta debito",
+        "is_default": true
+      }
+    ]
+  }
+]
