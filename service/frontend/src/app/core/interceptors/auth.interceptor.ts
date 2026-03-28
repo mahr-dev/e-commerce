@@ -4,10 +4,16 @@ import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
+/** Login/register devuelven 401 con credenciales incorrectas: no es sesión expirada. */
+function isAuthCredentialRequest(url: string): boolean {
+  const path = url.split('?')[0];
+  return /\/auth\/(login|register)$/.test(path);
+}
+
 /**
  * HTTP interceptor that:
  * 1. Attaches the Bearer token to every outgoing request
- * 2. Handles 401 responses by logging out and redirecting to login
+ * 2. On 401, solo cierra sesión si la petición iba autenticada (evita bucles con login fallido o carrito sin token)
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
@@ -15,7 +21,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = authService.token();
 
-  // Clone the request and attach the Authorization header if a token exists
   const authReq = token
     ? req.clone({
         setHeaders: { Authorization: `Bearer ${token}` },
@@ -24,8 +29,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Auto-logout on unauthorized responses
       if (error.status === 401) {
+        if (isAuthCredentialRequest(req.url)) {
+          return throwError(() => error);
+        }
+        if (!authReq.headers.has('Authorization')) {
+          return throwError(() => error);
+        }
         authService.logout();
         router.navigate(['/auth/login']);
       }
