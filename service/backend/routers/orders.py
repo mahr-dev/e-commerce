@@ -25,7 +25,7 @@ def get_current_user_id(token: str = Depends(oauth2_scheme)) -> str:
     return payload["sub"]
 
 
-@router.get("/", summary="Get order history")
+@router.get("", summary="Get order history")
 async def get_orders(user_id: str = Depends(get_current_user_id)):
     """
     Retrieve all orders for the authenticated user, sorted by date (newest first).

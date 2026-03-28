@@ -26,13 +26,13 @@ def get_current_user_id(token: str = Depends(oauth2_scheme)) -> str:
     return payload["sub"]
 
 
-@router.get("/", summary="Get current user's cart")
+@router.get("", summary="Get current user's cart")
 async def get_cart(user_id: str = Depends(get_current_user_id)):
     """Return the authenticated user's shopping cart."""
     return _cart_service.get_cart(user_id)
 
 
-@router.post("/", summary="Add item to cart")
+@router.post("", summary="Add item to cart")
 async def add_to_cart(
     request: AddToCartRequest,
     user_id: str = Depends(get_current_user_id)
@@ -67,7 +67,7 @@ async def remove_from_cart(
     return _cart_service.remove_item(user_id, product_id)
 
 
-@router.delete("/", summary="Clear entire cart")
+@router.delete("", summary="Clear entire cart")
 async def clear_cart(user_id: str = Depends(get_current_user_id)):
     """Remove all items from the cart."""
     _cart_service.clear_cart(user_id)

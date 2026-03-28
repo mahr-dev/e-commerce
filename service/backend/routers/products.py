@@ -19,7 +19,7 @@ async def get_bestsellers(limit: int = Query(8, ge=1, le=50)):
     return _product_service.get_bestsellers(limit=limit)
 
 
-@router.get("/", summary="List all products")
+@router.get("", summary="List all products")
 async def get_products(
     search: Optional[str] = Query(None, description="Search in name and description"),
     category: Optional[str] = Query(None, description="Filter by category"),

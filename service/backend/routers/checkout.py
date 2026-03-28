@@ -33,7 +33,7 @@ def get_current_user_id(token: str = Depends(oauth2_scheme)) -> str:
     return payload["sub"]
 
 
-@router.post("/", summary="Process checkout")
+@router.post("", summary="Process checkout")
 async def checkout(
     body: CheckoutRequest,
     user_id: str = Depends(get_current_user_id)
