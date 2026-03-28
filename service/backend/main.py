@@ -9,6 +9,7 @@ ReDoc:       http://localhost:8000/api/redoc
 
 La API REST vive bajo el prefijo /api (mismo origen que el front en Vercel).
 """
+import mimetypes
 import os
 from pathlib import Path
 
@@ -90,6 +91,31 @@ def _safe_public_file(relative: str) -> Path | None:
     return candidate if candidate.is_file() else None
 
 
+def _file_response_inline(path: Path) -> FileResponse:
+    """FileResponse con inline (Starlette por defecto usa attachment → el navegador descarga)."""
+    ext = path.suffix.lower()
+    if ext == ".html":
+        media_type = "text/html; charset=utf-8"
+    elif ext == ".js":
+        media_type = "application/javascript; charset=utf-8"
+    elif ext == ".css":
+        media_type = "text/css; charset=utf-8"
+    elif ext == ".json":
+        media_type = "application/json; charset=utf-8"
+    elif ext == ".svg":
+        media_type = "image/svg+xml"
+    elif ext == ".ico":
+        media_type = "image/x-icon"
+    else:
+        guessed, _ = mimetypes.guess_type(path.name)
+        media_type = guessed or "application/octet-stream"
+    return FileResponse(
+        path,
+        media_type=media_type,
+        content_disposition_type="inline",
+    )
+
+
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 app.mount("/api", api_app)
 
@@ -100,6 +126,15 @@ async def health_check_docker():
     return {"status": "ok", "service": "ecommerce-api", "version": "1.0.0"}
 
 
+@app.get("/", include_in_schema=False)
+async def serve_index_root():
+    """Raíz explícita (algunos despliegues no matchean bien el catch-all vacío)."""
+    index = PUBLIC_DIR / "index.html"
+    if index.is_file():
+        return _file_response_inline(index)
+    return Response(status_code=404)
+
+
 @app.get("/{full_path:path}", include_in_schema=False)
 async def serve_frontend(full_path: str):
     """Sirve ficheros de `public/` o `index.html` para rutas del SPA."""
@@ -107,8 +142,8 @@ async def serve_frontend(full_path: str):
         return Response(status_code=404)
     f = _safe_public_file(full_path)
     if f is not None:
-        return FileResponse(f)
+        return _file_response_inline(f)
     index = PUBLIC_DIR / "index.html"
     if index.is_file():
-        return FileResponse(index)
+        return _file_response_inline(index)
     return Response(status_code=404)
