@@ -1,5 +1,5 @@
 """
-Products router: catalog browsing endpoints (public, no auth required).
+Products router: catálogo público (sin Depends de JWT ni middleware de auth).
 """
 from typing import List, Optional
 from fastapi import APIRouter, Query
