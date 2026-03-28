@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  /** En Vercel el build usa environment.vercel.generated.ts (siempre /api + proxy en vercel.json). */
+  /** Vercel: ver inject-api-url.cjs (VERCEL_URL → https://…/api). Build estándar: ng usa environment.prod. */
   apiUrl: '/api',
 };
