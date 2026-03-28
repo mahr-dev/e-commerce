@@ -1,8 +1,7 @@
 /**
- * Build Vercel: apiUrl absoluta https://<VERCEL_URL>/api para que en Network aparezca
- * p. ej. https://e-commerce-txvg.vercel.app/api/products/... (mismo origen que el front).
- * En local (sin VERCEL_URL) → '/api'.
- * El destino real del API sigue siendo el rewrite en service/frontend/vercel.json.
+ * Build Vercel: siempre apiUrl = '/api' (mismo origen que la página → sin CORS en el navegador).
+ * El proxy en vercel.json reenvía al backend; no uses URL absoluta del front aquí (previews / otros hosts fallan).
+ * API_PUBLIC_URL se ignora si está definida.
  */
 const fs = require("fs");
 const path = require("path");
@@ -12,30 +11,16 @@ const out = path.join(envDir, "environment.vercel.generated.ts");
 
 if ((process.env.API_PUBLIC_URL || "").trim()) {
   console.warn(
-    "API_PUBLIC_URL está definida pero se ignora: usa VERCEL_URL + /api o '/api' en local."
+    "API_PUBLIC_URL está definida pero se ignora: el front usa solo /api (mismo origen, sin CORS)."
   );
 }
 
-const explicit = (process.env.PUBLIC_APP_URL || "").trim().replace(/\/$/, "");
-const vercelHost = (process.env.VERCEL_URL || "")
-  .trim()
-  .replace(/^https?:\/\//, "");
-
-let apiUrl;
-if (explicit) {
-  apiUrl = `${explicit}/api`;
-} else if (vercelHost) {
-  apiUrl = `https://${vercelHost}/api`;
-} else {
-  apiUrl = "/api";
-}
-
-const body = `/* Generado por inject-api-url.cjs (${apiUrl.startsWith("https") ? "origen Vercel" : "relativo /api"}) */
+const body = `/* Generado por inject-api-url.cjs: /api en el mismo host que el SPA */
 export const environment = {
   production: true,
-  apiUrl: ${JSON.stringify(apiUrl)},
+  apiUrl: '/api',
 };
 `;
 
 fs.writeFileSync(out, body, "utf8");
-console.log(`apiUrl -> ${apiUrl}`);
+console.log("apiUrl -> /api (mismo origen)");
