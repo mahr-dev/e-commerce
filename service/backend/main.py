@@ -31,18 +31,12 @@ app = FastAPI(
 # Middleware
 # ---------------------------------------------------------------------------
 
-# Allow Angular dev server and production frontend to reach the API
-ALLOWED_ORIGINS = [
-    "http://localhost:4200",   # Angular dev server
-    "http://localhost:80",     # Nginx explícito
-    "http://localhost",        # Nginx en Docker (puerto 80 implícito)
-    "http://frontend",         # Docker service name
-]
-
+# CORS abierto: cualquier origen. allow_credentials=False es obligatorio con "*"
+# (el front usa Bearer en Authorization, no cookies; sigue siendo válido).
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
