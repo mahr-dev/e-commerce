@@ -4,19 +4,25 @@ eCommerce API — FastAPI Application Entry Point
 Run with:
     uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
-Swagger UI:  http://localhost:8000/docs
-ReDoc:       http://localhost:8000/redoc
+Swagger UI:  http://localhost:8000/api/docs
+ReDoc:       http://localhost:8000/api/redoc
+
+La API REST vive bajo el prefijo /api (mismo origen que el front en Vercel).
 """
+import os
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, Response
 
 from routers import auth, products, cart, checkout, orders, payment, account
 
 # ---------------------------------------------------------------------------
-# Application factory
+# API (montada en /api)
 # ---------------------------------------------------------------------------
 
-app = FastAPI(
+api_app = FastAPI(
     title="eCommerce API",
     description=(
         "RESTful API for a full-stack eCommerce application. "
@@ -27,19 +33,24 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# ---------------------------------------------------------------------------
-# Middleware
-# ---------------------------------------------------------------------------
-
 # Allow Angular dev server and production frontend to reach the API
 ALLOWED_ORIGINS = [
-    "http://localhost:4200",   # Angular dev server
-    "http://localhost:80",     # Nginx explícito
-    "http://localhost",        # Nginx en Docker (puerto 80 implícito)
-    "http://frontend",         # Docker service name
+    "http://localhost:4200",
+    "http://localhost:80",
+    "http://localhost",
+    "http://frontend",
 ]
 
-app.add_middleware(
+_vercel = os.environ.get("VERCEL_URL")
+if _vercel:
+    ALLOWED_ORIGINS.append(f"https://{_vercel}")
+
+for _origin in os.environ.get("CORS_EXTRA_ORIGINS", "").split(","):
+    _o = _origin.strip()
+    if _o:
+        ALLOWED_ORIGINS.append(_o)
+
+api_app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
@@ -47,23 +58,57 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------------------------------
-# Routers
-# ---------------------------------------------------------------------------
+api_app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+api_app.include_router(products.router, prefix="/products", tags=["Products"])
+api_app.include_router(cart.router, prefix="/cart", tags=["Cart"])
+api_app.include_router(checkout.router, prefix="/checkout", tags=["Checkout"])
+api_app.include_router(orders.router, prefix="/orders", tags=["Orders"])
+api_app.include_router(payment.router, prefix="/payment", tags=["Payment"])
+api_app.include_router(account.router, prefix="/account", tags=["Account"])
 
-app.include_router(auth.router,     prefix="/auth",     tags=["Authentication"])
-app.include_router(products.router, prefix="/products", tags=["Products"])
-app.include_router(cart.router,     prefix="/cart",     tags=["Cart"])
-app.include_router(checkout.router, prefix="/checkout", tags=["Checkout"])
-app.include_router(orders.router,   prefix="/orders",   tags=["Orders"])
-app.include_router(payment.router,  prefix="/payment",  tags=["Payment"])
-app.include_router(account.router,  prefix="/account",  tags=["Account"])
 
-# ---------------------------------------------------------------------------
-# Health check
-# ---------------------------------------------------------------------------
-
-@app.get("/health", tags=["Health"])
+@api_app.get("/health", tags=["Health"])
 async def health_check():
-    """Simple health check endpoint for Docker and load balancers."""
+    """Health check (ruta canónica bajo /api en despliegue unificado)."""
     return {"status": "ok", "service": "ecommerce-api", "version": "1.0.0"}
+
+# ---------------------------------------------------------------------------
+# Raíz: montaje /api + estáticos Angular (public/) + SPA fallback
+# ---------------------------------------------------------------------------
+
+PUBLIC_DIR = Path(__file__).resolve().parent.parent.parent / "public"
+
+
+def _safe_public_file(relative: str) -> Path | None:
+    if not relative or relative.startswith("..") or "\\..\\" in relative:
+        return None
+    candidate = (PUBLIC_DIR / relative).resolve()
+    try:
+        candidate.relative_to(PUBLIC_DIR.resolve())
+    except ValueError:
+        return None
+    return candidate if candidate.is_file() else None
+
+
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+app.mount("/api", api_app)
+
+
+@app.get("/health", include_in_schema=False, tags=["Health"])
+async def health_check_docker():
+    """Misma respuesta que /api/health; útil para Docker sin prefijo."""
+    return {"status": "ok", "service": "ecommerce-api", "version": "1.0.0"}
+
+
+@app.get("/{full_path:path}", include_in_schema=False)
+async def serve_frontend(full_path: str):
+    """Sirve ficheros de `public/` o `index.html` para rutas del SPA."""
+    if full_path.startswith("api"):
+        return Response(status_code=404)
+    f = _safe_public_file(full_path)
+    if f is not None:
+        return FileResponse(f)
+    index = PUBLIC_DIR / "index.html"
+    if index.is_file():
+        return FileResponse(index)
+    return Response(status_code=404)

@@ -1,0 +1,7 @@
+[project]
+name = "e-commerce"
+version = "1.0.0"
+requires-python = ">=3.11"
+
+[tool.vercel.scripts]
+build = "npm run vercel-build"

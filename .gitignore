@@ -87,6 +87,10 @@ pnpm-lock.yaml
 # Build outputs
 dist/
 build/
+
+# Angular copiado a la raíz para Vercel (se genera en el build)
+/public/*
+!/public/.gitkeep
 .next/
 .nuxt/
 out/
