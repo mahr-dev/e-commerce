@@ -7,10 +7,9 @@ Run with:
 Swagger UI:  http://localhost:8000/docs
 ReDoc:       http://localhost:8000/redoc
 """
-from fastapi import FastAPI
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import Response
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+from starlette.middleware.cors import CORSMiddleware
 
 from routers import auth, products, cart, checkout, orders, payment, account
 
@@ -30,45 +29,41 @@ app = FastAPI(
 )
 
 # ---------------------------------------------------------------------------
-# CORS: middleware explícito (preflight + cabeceras en la respuesta)
+# CORS (ASGI): debe envolver también respuestas de error (p. ej. 401)
 # ---------------------------------------------------------------------------
-# CORSMiddleware con allow_headers=["*"] falla en algunos preflights; esto
-# replica el origen pedido y devuelve cabeceras concretas en OPTIONS.
+
+_CORS_HEADERS = {
+    "access-control-allow-origin": "*",
+    "access-control-allow-methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD",
+    "access-control-allow-headers": (
+        "Authorization, Content-Type, Accept, Origin, X-Requested-With, "
+        "access-control-request-method, access-control-request-headers"
+    ),
+    "access-control-max-age": "86400",
+}
 
 
-class OpenCorsMiddleware(BaseHTTPMiddleware):
-    _allow_origin = "*"
-    _allow_methods = "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD"
-    _default_allow_headers = (
-        "Authorization, Content-Type, Accept, Origin, "
-        "X-Requested-With, access-control-allow-origin, "
-        "access-control-allow-headers, access-control-request-method, "
-        "access-control-request-headers"
-    )
-
-    async def dispatch(self, request: Request, call_next):
-        if request.method == "OPTIONS":
-            req_h = request.headers.get("access-control-request-headers")
-            allow_headers = (
-                req_h if req_h else self._default_allow_headers
-            )
-            return Response(
-                status_code=204,
-                headers={
-                    "access-control-allow-origin": self._allow_origin,
-                    "access-control-allow-methods": self._allow_methods,
-                    "access-control-allow-headers": allow_headers,
-                    "access-control-max-age": "86400",
-                },
-            )
-
-        response = await call_next(request)
-        response.headers["access-control-allow-origin"] = self._allow_origin
-        response.headers["access-control-allow-methods"] = self._allow_methods
-        return response
+def _with_cors(response: JSONResponse) -> JSONResponse:
+    for k, v in _CORS_HEADERS.items():
+        response.headers[k] = v
+    return response
 
 
-app.add_middleware(OpenCorsMiddleware)
+@app.exception_handler(HTTPException)
+async def http_exception_with_cors(_request: Request, exc: HTTPException) -> JSONResponse:
+    """401/403/etc. deben llevar CORS o el navegador solo muestra error de CORS."""
+    base = dict(exc.headers) if exc.headers else {}
+    r = JSONResponse(status_code=exc.status_code, content={"detail": exc.detail}, headers=base)
+    return _with_cors(r)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ---------------------------------------------------------------------------
 # Routers
