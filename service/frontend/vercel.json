@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://e-commerce-9dql3r3pa-miguel-hernandezs-projects-b6076a4e.vercel.app/:path*"
+      "destination": "https://e-commerce-miguel-hernandezs-projects-b6076a4e.vercel.app/:path*"
     },
     {
       "source": "/(.*)",

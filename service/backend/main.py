@@ -25,6 +25,7 @@ from routers import auth, products, cart, checkout, orders, payment, account
 # ---------------------------------------------------------------------------
 
 ALLOW_ORIGINS = [
+    "https://e-commerce-txvg.vercel.app",
     "https://e-commerce-frontend-seven-self.vercel.app",
     "http://localhost:4200",
     "http://127.0.0.1:4200",
