@@ -1,13 +1,51 @@
 """
 JSON file handler utility.
-Provides thread-safe read/write operations for the JSON-based data store.
+Provides read/write operations for the JSON-based data store.
+
+En Vercel el despliegue es solo lectura salvo /tmp; se usa /tmp/ecommerce-data y se
+copian los .json del bundle la primera vez por arranque en frío.
 """
 import json
 import os
+import shutil
+import tempfile
 from typing import Any, Dict, List
 
-# Resolve the /data directory relative to this file's location
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+_ROOT = os.path.dirname(os.path.dirname(__file__))
+_BUNDLE_DATA_DIR = os.path.join(_ROOT, "data")
+_TMP_DATA_DIR = os.path.join(tempfile.gettempdir(), "ecommerce-data")
+
+
+def _use_tmp_storage() -> bool:
+    return bool(os.environ.get("VERCEL"))
+
+
+def _ensure_runtime_data_dir() -> str:
+    if not _use_tmp_storage():
+        return _BUNDLE_DATA_DIR
+
+    os.makedirs(_TMP_DATA_DIR, exist_ok=True)
+    seeded = os.path.join(_TMP_DATA_DIR, ".seeded_from_bundle")
+    if os.path.isfile(seeded):
+        return _TMP_DATA_DIR
+
+    try:
+        for name in os.listdir(_BUNDLE_DATA_DIR):
+            if not name.endswith(".json"):
+                continue
+            src = os.path.join(_BUNDLE_DATA_DIR, name)
+            dst = os.path.join(_TMP_DATA_DIR, name)
+            if not os.path.isfile(dst):
+                shutil.copy2(src, dst)
+    except FileNotFoundError:
+        pass
+
+    with open(seeded, "w", encoding="utf-8") as f:
+        f.write("ok")
+    return _TMP_DATA_DIR
+
+
+DATA_DIR = _ensure_runtime_data_dir()
 
 
 def read_json(filename: str) -> List[Dict[str, Any]]:
@@ -70,7 +108,7 @@ def update_record(filename: str, record_id: str, updates: Dict[str, Any], id_fie
         id_field: The key to match against (default: "id").
 
     Returns:
-        Updated record, or None if not found.
+        Updated record dict, or None if not found.
     """
     records = read_json(filename)
     updated = None
